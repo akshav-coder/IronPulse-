@@ -109,6 +109,31 @@ const RegisterPlanPayment = () => {
     }
   };
 
+  const handleBypassPayment = async () => {
+    if (!selectedPlanId) return;
+    setPaymentProcessing(true);
+    setError('');
+    try {
+      // 1. Call verification endpoint directly with mock tokens
+      const verifyRes = await API.post('/payments/verify', {
+        razorpay_order_id: `order_mock_${Math.random().toString(36).substr(2, 9)}`,
+        razorpay_payment_id: `pay_mock_${Math.random().toString(36).substr(2, 9)}`,
+        razorpay_signature: 'mock_signature_value',
+        plan_id: selectedPlanId,
+      });
+
+      if (verifyRes.data?.member?.status) {
+        setMemberStatus(verifyRes.data.member.status);
+      }
+      alert('Mock payment simulated successfully! Awaiting coach approval.');
+    } catch (err) {
+      console.error('Bypass simulation failed:', err);
+      setError(err.response?.data?.message || 'Bypass failed. Please try again.');
+    } finally {
+      setPaymentProcessing(false);
+    }
+  };
+
   const selectedPlan = plans.find((p) => p._id === selectedPlanId);
 
   if (loading) {
@@ -125,7 +150,7 @@ const RegisterPlanPayment = () => {
       <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
         <button
           onClick={logout}
-          className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 transition-all rounded-lg text-xs font-semibold shadow-sm hover:shadow"
+          className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-800 text-slate-500 bg-white hover:bg-slate-850 transition-all rounded-lg text-xs font-semibold shadow-sm hover:shadow"
         >
           <LogOut size={14} />
           Sign Out
@@ -135,10 +160,10 @@ const RegisterPlanPayment = () => {
       <div className="max-w-4xl mx-auto w-full my-auto space-y-8">
         {/* Header Title */}
         <div className="text-center space-y-2">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-200 tracking-tight">
             Choose your <span className="text-indigo-600">IronPulse</span> Plan
           </h2>
-          <p className="text-slate-500 text-sm max-w-xl mx-auto">
+          <p className="text-slate-400 text-sm max-w-xl mx-auto">
             Get started by picking a membership plan. Pay securely online via Razorpay to activate your signup request.
           </p>
         </div>
@@ -158,7 +183,7 @@ const RegisterPlanPayment = () => {
                 key={plan._id}
                 onClick={() => setSelectedPlanId(plan._id)}
                 className={`bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer relative flex flex-col justify-between space-y-4 ${
-                  isSelected ? 'border-indigo-600 ring-2 ring-indigo-500/20' : 'border-slate-200 hover:border-slate-300'
+                  isSelected ? 'border-indigo-600 ring-2 ring-indigo-500/20' : 'border-slate-800 hover:border-slate-700'
                 }`}
               >
                 {isSelected && (
@@ -168,13 +193,13 @@ const RegisterPlanPayment = () => {
                 )}
 
                 <div className="space-y-2">
-                  <h3 className="text-md font-bold text-slate-900">{plan.name}</h3>
-                  <div className="flex items-baseline text-slate-900">
+                  <h3 className="text-md font-bold text-slate-250">{plan.name}</h3>
+                  <div className="flex items-baseline text-slate-200">
                     <span className="text-3xl font-extrabold tracking-tight">₹{plan.price}</span>
-                    <span className="ml-1 text-xs text-slate-500">/ {plan.duration_days} days</span>
+                    <span className="ml-1 text-xs text-slate-400">/ {plan.duration_days} days</span>
                   </div>
                   {plan.description && (
-                    <p className="text-xs text-slate-500 leading-relaxed pt-2 border-t border-slate-100">
+                    <p className="text-xs text-slate-400 leading-relaxed pt-2 border-t border-slate-800">
                       {plan.description}
                     </p>
                   )}
@@ -184,8 +209,8 @@ const RegisterPlanPayment = () => {
                   <span
                     className={`w-full flex items-center justify-center gap-1 py-2 px-4 rounded-xl text-xs font-semibold transition-all border ${
                       isSelected
-                        ? 'bg-indigo-550 text-white border-indigo-600 shadow-sm'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                        : 'bg-white text-slate-400 border-slate-800 hover:bg-slate-850'
                     }`}
                   >
                     {isSelected ? <Check size={14} /> : null}
@@ -199,36 +224,46 @@ const RegisterPlanPayment = () => {
 
         {/* Selected Plan Summary Banner & Pay Button */}
         {selectedPlan && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm max-w-xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="bg-white border border-slate-800 rounded-2xl p-6 shadow-sm max-w-xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
             <div className="space-y-1 text-center sm:text-left">
               <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block">Checkout Summary</span>
-              <h4 className="text-lg font-bold text-slate-900">{selectedPlan.name} Membership</h4>
-              <p className="text-xs text-slate-500">Duration: {selectedPlan.duration_days} Days — Price: ₹{selectedPlan.price}</p>
+              <h4 className="text-lg font-bold text-slate-200">{selectedPlan.name} Membership</h4>
+              <p className="text-xs text-slate-400">Duration: {selectedPlan.duration_days} Days — Price: ₹{selectedPlan.price}</p>
             </div>
 
-            <button
-              onClick={handlePayment}
-              disabled={paymentProcessing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
-            >
-              {paymentProcessing ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <CreditCard size={16} />
-                  Pay & Join
-                  <ArrowRight size={14} />
-                </>
-              )}
-            </button>
+            <div className="flex flex-col gap-2 w-full sm:w-auto">
+              <button
+                onClick={handlePayment}
+                disabled={paymentProcessing}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg cursor-pointer"
+              >
+                {paymentProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard size={16} />
+                    Pay & Join
+                    <ArrowRight size={14} />
+                  </>
+                )}
+              </button>
+              
+              <button
+                onClick={handleBypassPayment}
+                disabled={paymentProcessing}
+                className="w-full inline-flex items-center justify-center gap-2 px-6 py-2 border border-slate-800 rounded-xl text-xs font-semibold text-slate-400 bg-white hover:bg-slate-850 active:bg-slate-800 disabled:opacity-50 transition-all shadow-sm cursor-pointer"
+              >
+                ⚡ Bypass Payment (Local Test Mode)
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      <div className="text-center text-[10px] text-slate-400 py-6">
+      <div className="text-center text-[10px] text-slate-500 py-6">
         IronPulse Fitness Center © 2026. All payments are processed and verified securely.
       </div>
     </div>
