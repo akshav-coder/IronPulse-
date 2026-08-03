@@ -45,29 +45,30 @@ const RegisterPlanPayment = () => {
     setPaymentProcessing(true);
     setError('');
 
-    // Detect if we are using mock keys (test environment)
-    const isMockEnvironment = true; // Default local test bypass
-
-    if (isMockEnvironment) {
-      // Open our clean simulated local payment modal instead of broken Razorpay SDK popup
-      setShowMockModal(true);
-      setPaymentProcessing(false);
-      return;
-    }
-
-    const scriptLoaded = await loadRazorpayScript();
-    if (!scriptLoaded) {
-      setError('Razorpay Checkout SDK failed to load. Please verify your connection.');
-      setPaymentProcessing(false);
-      return;
-    }
-
     try {
       // 1. Create order on backend
       const orderRes = await API.post('/payments/create-order', { plan_id: selectedPlanId });
       const { order_id, amount, currency, key_id } = orderRes.data;
 
-      // 2. Configure Razorpay options
+      // 2. Check if we are using mock keys (test environment)
+      const isMockKey = key_id === 'rzp_test_mockkey1234';
+
+      if (isMockKey) {
+        // Open our clean simulated local payment modal instead of broken Razorpay SDK popup
+        setShowMockModal(true);
+        setPaymentProcessing(false);
+        return;
+      }
+
+      // 3. Otherwise load real Razorpay Checkout script!
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        setError('Razorpay Checkout SDK failed to load. Please verify your connection.');
+        setPaymentProcessing(false);
+        return;
+      }
+
+      // Configure Razorpay options for real payment
       const options = {
         key: key_id,
         amount: amount,
@@ -84,7 +85,7 @@ const RegisterPlanPayment = () => {
         },
         handler: async function (response) {
           try {
-            // 3. Verify Razorpay transaction
+            // Verify Razorpay transaction
             const verifyRes = await API.post('/payments/verify', {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -92,7 +93,7 @@ const RegisterPlanPayment = () => {
               plan_id: selectedPlanId,
             });
 
-            // 4. Update state inside auth context to unlock
+            // Update state inside auth context to unlock
             if (verifyRes.data?.member?.status) {
               setMemberStatus(verifyRes.data.member.status);
             }
