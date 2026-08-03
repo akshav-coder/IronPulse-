@@ -52,6 +52,10 @@ const Sidebar = () => {
             <DollarSign size={18} />
             <span>Revenue Ledger</span>
           </Link>
+          <Link to="/owner/plans" className={linkClass('/owner/plans')}>
+            <Award size={18} />
+            <span>Membership Plans</span>
+          </Link>
           <Link to="/feed" className={linkClass('/feed')}>
             <MessageSquare size={18} />
             <span>Community Feed</span>

@@ -21,6 +21,7 @@ const OwnerStaffList = lazy(() => import('./pages/OwnerStaffList'));
 const OwnerClassSchedule = lazy(() => import('./pages/OwnerClassSchedule'));
 const OwnerRevenueReport = lazy(() => import('./pages/OwnerRevenueReport'));
 const OwnerBulkImport = lazy(() => import('./pages/OwnerBulkImport'));
+const OwnerPlanList = lazy(() => import('./pages/OwnerPlanList'));
 const TrainerDashboard = lazy(() => import('./pages/TrainerDashboard'));
 const TrainerMemberList = lazy(() => import('./pages/TrainerMemberList'));
 const TrainerMemberDetail = lazy(() => import('./pages/TrainerMemberDetail'));
@@ -190,6 +191,14 @@ function AppContent() {
             element={
               <ProtectedRoute allowedRoles={['owner']}>
                 <OwnerStaffList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/owner/plans"
+            element={
+              <ProtectedRoute allowedRoles={['owner']}>
+                <OwnerPlanList />
               </ProtectedRoute>
             }
           />
