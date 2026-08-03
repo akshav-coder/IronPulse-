@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api';
 import { useAuth } from '../context/AuthContext';
-import { CreditCard, Check, LogOut, ArrowRight, IndianRupee } from 'lucide-react';
+import { CreditCard, Check, LogOut, ArrowRight, IndianRupee, X } from 'lucide-react';
 
 const RegisterPlanPayment = () => {
   const { user, logout, setMemberStatus } = useAuth();
@@ -9,6 +9,7 @@ const RegisterPlanPayment = () => {
   const [selectedPlanId, setSelectedPlanId] = useState('');
   const [loading, setLoading] = useState(true);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [showMockModal, setShowMockModal] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -43,6 +44,16 @@ const RegisterPlanPayment = () => {
     if (!selectedPlanId) return;
     setPaymentProcessing(true);
     setError('');
+
+    // Detect if we are using mock keys (test environment)
+    const isMockEnvironment = true; // Default local test bypass
+
+    if (isMockEnvironment) {
+      // Open our clean simulated local payment modal instead of broken Razorpay SDK popup
+      setShowMockModal(true);
+      setPaymentProcessing(false);
+      return;
+    }
 
     const scriptLoaded = await loadRazorpayScript();
     if (!scriptLoaded) {
@@ -113,8 +124,9 @@ const RegisterPlanPayment = () => {
     if (!selectedPlanId) return;
     setPaymentProcessing(true);
     setError('');
+    setShowMockModal(false);
     try {
-      // 1. Call verification endpoint directly with mock tokens
+      // Call verification endpoint directly with mock tokens
       const verifyRes = await API.post('/payments/verify', {
         razorpay_order_id: `order_mock_${Math.random().toString(36).substr(2, 9)}`,
         razorpay_payment_id: `pay_mock_${Math.random().toString(36).substr(2, 9)}`,
@@ -250,18 +262,72 @@ const RegisterPlanPayment = () => {
                   </>
                 )}
               </button>
-              
-              <button
-                onClick={handleBypassPayment}
-                disabled={paymentProcessing}
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-2 border border-slate-800 rounded-xl text-xs font-semibold text-slate-400 bg-white hover:bg-slate-850 active:bg-slate-800 disabled:opacity-50 transition-all shadow-sm cursor-pointer"
-              >
-                ⚡ Bypass Payment (Local Test Mode)
-              </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Simulated Razorpay Modal in Local Dev */}
+      {showMockModal && selectedPlan && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            {/* Header */}
+            <div className="bg-indigo-600 text-white px-6 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <CreditCard size={18} />
+                <h3 className="font-bold text-sm tracking-wide">IronPulse Test Payment</h3>
+              </div>
+              <button 
+                onClick={() => setShowMockModal(false)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <div className="text-center space-y-1 bg-slate-850 p-4 rounded-xl border border-slate-800">
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Payment Amount</span>
+                <div className="text-3xl font-black text-slate-200">₹{selectedPlan.price}</div>
+                <span className="text-xs text-slate-400 block">{selectedPlan.name} Membership ({selectedPlan.duration_days} Days)</span>
+              </div>
+
+              {/* simulated payment methods */}
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Account Email</label>
+                  <input
+                    type="text"
+                    disabled
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-400 text-xs cursor-not-allowed"
+                    value={user?.email || ''}
+                  />
+                </div>
+                <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-lg text-xs leading-relaxed">
+                  📢 <strong>Local Dev Sandbox:</strong> This is a local sandbox simulated checkout view. No real transaction will occur. Click the simulator button below to trigger payment success response verification.
+                </div>
+              </div>
+            </div>
+
+            {/* Footer buttons */}
+            <div className="bg-slate-900 px-6 py-4 flex gap-3 border-t border-slate-800">
+              <button
+                onClick={() => setShowMockModal(false)}
+                className="flex-1 px-4 py-2.5 border border-slate-800 text-slate-400 hover:bg-slate-850 rounded-xl text-xs font-semibold transition-all cursor-pointer text-center"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBypassPayment}
+                className="flex-1 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition-all shadow-md cursor-pointer text-center"
+              >
+                Simulate Success
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="text-center text-[10px] text-slate-500 py-6">
         IronPulse Fitness Center © 2026. All payments are processed and verified securely.
