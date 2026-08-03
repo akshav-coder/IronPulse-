@@ -4,10 +4,12 @@ import Plan from '../models/Plan.js';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_mockkey1234',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'mocksecret1234',
-});
+const getRazorpayInstance = () => {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_mockkey1234',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || 'mocksecret1234',
+  });
+};
 
 // @desc    Add a payment record
 // @route   POST /api/payments
@@ -166,7 +168,7 @@ export const createRazorpayOrder = async (req, res) => {
         currency: 'INR',
         receipt: payment._id.toString(),
       };
-      order = await razorpay.orders.create(options);
+      order = await getRazorpayInstance().orders.create(options);
     }
 
     res.json({
@@ -273,7 +275,7 @@ export const createOrderForPlan = async (req, res) => {
         currency: 'INR',
         receipt: `plan_reg_${member._id}_${Date.now()}`,
       };
-      order = await razorpay.orders.create(options);
+      order = await getRazorpayInstance().orders.create(options);
     }
 
     res.json({
