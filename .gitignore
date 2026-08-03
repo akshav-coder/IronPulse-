@@ -14,3 +14,7 @@ frontend/dist/
 # Logs and system files
 *.log
 .DS_Store
+
+# Uploaded contents
+backend/uploads/*
+!backend/uploads/.gitkeep

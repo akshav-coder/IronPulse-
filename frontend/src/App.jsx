@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -6,32 +6,41 @@ import { WorkoutProvider } from './context/WorkoutContext';
 import { DietProvider } from './context/DietContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import Dashboard from './pages/Dashboard';
-import MemberProfile from './pages/MemberProfile';
-import MemberClassSchedule from './pages/MemberClassSchedule';
-import MemberWorkoutPlan from './pages/MemberWorkoutPlan';
-import MemberDietPlan from './pages/MemberDietPlan';
-import OwnerDashboard from './pages/OwnerDashboard';
-import OwnerMemberList from './pages/OwnerMemberList';
-import OwnerMemberDetail from './pages/OwnerMemberDetail';
-import OwnerPaymentList from './pages/OwnerPaymentList';
-import OwnerStaffList from './pages/OwnerStaffList';
-import OwnerClassSchedule from './pages/OwnerClassSchedule';
-import OwnerRevenueReport from './pages/OwnerRevenueReport';
-import OwnerBulkImport from './pages/OwnerBulkImport';
-import TrainerDashboard from './pages/TrainerDashboard';
-import TrainerMemberList from './pages/TrainerMemberList';
-import TrainerMemberDetail from './pages/TrainerMemberDetail';
-import TrainerClasses from './pages/TrainerClasses';
-import TrainerWorkoutPlan from './pages/TrainerWorkoutPlan';
-import TrainerDietPlan from './pages/TrainerDietPlan';
-import Workouts from './pages/Workouts';
-import DietTracker from './pages/DietTracker';
-import ProgressTracker from './pages/ProgressTracker';
-import Chat from './pages/Chat';
-import Feed from './pages/Feed';
-import Auth from './pages/Auth';
-import PendingSignups from './pages/PendingSignups';
+
+// Lazy load route pages
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const MemberProfile = lazy(() => import('./pages/MemberProfile'));
+const MemberClassSchedule = lazy(() => import('./pages/MemberClassSchedule'));
+const MemberWorkoutPlan = lazy(() => import('./pages/MemberWorkoutPlan'));
+const MemberDietPlan = lazy(() => import('./pages/MemberDietPlan'));
+const OwnerDashboard = lazy(() => import('./pages/OwnerDashboard'));
+const OwnerMemberList = lazy(() => import('./pages/OwnerMemberList'));
+const OwnerMemberDetail = lazy(() => import('./pages/OwnerMemberDetail'));
+const OwnerPaymentList = lazy(() => import('./pages/OwnerPaymentList'));
+const OwnerStaffList = lazy(() => import('./pages/OwnerStaffList'));
+const OwnerClassSchedule = lazy(() => import('./pages/OwnerClassSchedule'));
+const OwnerRevenueReport = lazy(() => import('./pages/OwnerRevenueReport'));
+const OwnerBulkImport = lazy(() => import('./pages/OwnerBulkImport'));
+const TrainerDashboard = lazy(() => import('./pages/TrainerDashboard'));
+const TrainerMemberList = lazy(() => import('./pages/TrainerMemberList'));
+const TrainerMemberDetail = lazy(() => import('./pages/TrainerMemberDetail'));
+const TrainerClasses = lazy(() => import('./pages/TrainerClasses'));
+const TrainerWorkoutPlan = lazy(() => import('./pages/TrainerWorkoutPlan'));
+const TrainerDietPlan = lazy(() => import('./pages/TrainerDietPlan'));
+const Workouts = lazy(() => import('./pages/Workouts'));
+const DietTracker = lazy(() => import('./pages/DietTracker'));
+const ProgressTracker = lazy(() => import('./pages/ProgressTracker'));
+const Chat = lazy(() => import('./pages/Chat'));
+const Feed = lazy(() => import('./pages/Feed'));
+const Auth = lazy(() => import('./pages/Auth'));
+const PendingSignups = lazy(() => import('./pages/PendingSignups'));
+
+// Loading spinner fallback for Suspense
+const LoadingSpinner = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 // Protected Route Component with Role Checks
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -81,7 +90,8 @@ function AppContent() {
             <span>Your account is pending approval from gym staff. Some features may be limited until approved.</span>
           </div>
         )}
-        <Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           <Route
             path="/"
             element={
@@ -265,6 +275,7 @@ function AppContent() {
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </div>
     </div>
   );
