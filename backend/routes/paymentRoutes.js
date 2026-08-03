@@ -6,6 +6,8 @@ import {
   updatePaymentStatus,
   createRazorpayOrder,
   verifyRazorpayPayment,
+  createOrderForPlan,
+  verifyOrderPayment,
   razorpayWebhook,
 } from '../controllers/paymentController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -24,6 +26,8 @@ router.get('/gym/:gym_id', getGymPayments);
 router.put('/:id/status', updatePaymentStatus);
 
 // Razorpay checkout endpoints
+router.post('/create-order', createOrderForPlan);
+router.post('/verify', verifyOrderPayment);
 router.post('/:id/razorpay-order', createRazorpayOrder);
 router.post('/razorpay/verify', verifyRazorpayPayment);
 

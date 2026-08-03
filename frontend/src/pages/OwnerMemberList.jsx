@@ -138,7 +138,7 @@ const OwnerMemberList = () => {
 
   const startEdit = (member) => {
     setEditingId(member._id);
-    setEditPlan(member.membership_plan);
+    setEditPlan(member.plan_name || '');
     setEditStatus(member.status);
     setEditTrainer(member.assigned_trainer_id?._id || member.assigned_trainer_id || '');
     setEditDietitian(member.assigned_dietitian_id?._id || member.assigned_dietitian_id || '');
@@ -365,7 +365,7 @@ const OwnerMemberList = () => {
                           onChange={(e) => setEditPlan(e.target.value)}
                         />
                       ) : (
-                        <span className="text-slate-300">{member.membership_plan}</span>
+                        <span className="text-slate-300">{member.plan_name}</span>
                       )}
                     </td>
                     <td className="py-4 px-4">

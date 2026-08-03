@@ -34,6 +34,7 @@ const Chat = lazy(() => import('./pages/Chat'));
 const Feed = lazy(() => import('./pages/Feed'));
 const Auth = lazy(() => import('./pages/Auth'));
 const PendingSignups = lazy(() => import('./pages/PendingSignups'));
+const RegisterPlanPayment = lazy(() => import('./pages/RegisterPlanPayment'));
 
 // Loading spinner fallback for Suspense
 const LoadingSpinner = () => (
@@ -79,6 +80,17 @@ const DashboardRedirector = () => {
 
 function AppContent() {
   const { user, memberStatus } = useAuth();
+
+  if (user && user.role === 'member' && memberStatus === 'pending_payment') {
+    return (
+      <div className="min-h-screen bg-slate-950 flex-grow w-full">
+        <Suspense fallback={<LoadingSpinner />}>
+          <RegisterPlanPayment />
+        </Suspense>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex">
       {user && <Sidebar />}

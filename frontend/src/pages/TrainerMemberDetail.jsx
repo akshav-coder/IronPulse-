@@ -108,7 +108,7 @@ const TrainerMemberDetail = () => {
               )}
               <div>
                 <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Membership Plan</span>
-                <span className="text-slate-300 font-medium">{member?.membership_plan}</span>
+                <span className="text-slate-300 font-medium">{member?.plan_name}</span>
               </div>
               <div>
                 <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Join Date</span>

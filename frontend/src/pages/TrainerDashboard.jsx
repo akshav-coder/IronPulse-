@@ -55,17 +55,10 @@ const TrainerDashboard = () => {
   }, [gymId]);
 
   const handleApprove = async (memberId) => {
-    const plan = selectedPlans[memberId];
     const trainerId = selectedTrainers[memberId];
-
-    if (!plan || !plan.trim()) {
-      alert('Please specify a membership plan for approval');
-      return;
-    }
 
     try {
       await API.put(`/members/${memberId}/approve`, {
-        membership_plan: plan.trim(),
         assigned_trainer_id: trainerId || null,
       });
       alert('Member registration approved!');

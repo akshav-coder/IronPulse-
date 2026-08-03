@@ -161,7 +161,7 @@ const Chat = () => {
                       <div className="overflow-hidden">
                         <h4 className="font-bold text-xs text-slate-200 truncate">{contact?.name}</h4>
                         <p className="text-[10px] text-indigo-400 truncate font-semibold">
-                          {isTrainer ? m.membership_plan : contact?.specialty || 'Coach'}
+                          {isTrainer ? m.plan_name : contact?.specialty || 'Coach'}
                         </p>
                       </div>
                     </button>

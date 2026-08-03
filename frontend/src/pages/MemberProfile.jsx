@@ -233,7 +233,7 @@ const MemberProfile = () => {
                   <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Membership Plan</span>
                   <div className="flex items-center gap-2 text-slate-300 font-medium">
                     <Shield size={16} className="text-indigo-400" />
-                    <span>{member?.membership_plan}</span>
+                    <span>{member?.plan_name}</span>
                   </div>
                 </div>
                 {member?.assigned_trainer_id && (

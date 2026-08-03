@@ -57,20 +57,13 @@ const PendingSignups = () => {
   }, [gymId]);
 
   const handleApprove = async (memberId) => {
-    const plan = selectedPlans[memberId];
     const trainerSelectionId = selectedTrainers[memberId];
     const dietitianSelectionId = selectedDietitians[memberId];
-
-    if (!plan || !plan.trim()) {
-      alert('Please specify a membership plan for approval');
-      return;
-    }
 
     try {
       setError('');
       setSuccess('');
       await API.put(`/members/${memberId}/approve`, {
-        membership_plan: plan.trim(),
         assigned_trainer_id: trainerSelectionId || null,
         assigned_dietitian_id: dietitianSelectionId || null,
       });
@@ -165,21 +158,18 @@ const PendingSignups = () => {
                   <p className="text-xs text-slate-400">Email: {m.user_id?.email}</p>
                   <p className="text-xs text-slate-400">Phone: {m.user_id?.phone || '—'}</p>
                   <p className="text-[10px] text-slate-500">Registration Date: {new Date(m.join_date || m.createdAt).toLocaleDateString()}</p>
+                  <div className="mt-2 inline-flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-2 py-1 rounded-lg text-[10px] font-semibold">
+                    <span>Plan: {m.plan_name || 'Generic'}</span>
+                    {m.expiry_date && (
+                      <span className="text-slate-500">
+                        | Paid (Expires: {new Date(m.expiry_date).toLocaleDateString()})
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Form fields for actions */}
                 <div className="flex flex-wrap items-center gap-3">
-                  {/* Plan input */}
-                  <div>
-                    <label className="block text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1">Plan Name</label>
-                    <input
-                      type="text"
-                      className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-xs focus:outline-none focus:border-indigo-500 w-40"
-                      placeholder="e.g. Monthly Premium"
-                      value={selectedPlans[m._id] || ''}
-                      onChange={(e) => setSelectedPlans({ ...selectedPlans, [m._id]: e.target.value })}
-                    />
-                  </div>
 
                   {/* Trainer dropdown */}
                   <div>

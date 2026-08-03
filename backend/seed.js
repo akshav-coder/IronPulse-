@@ -15,11 +15,13 @@ import Class from './models/Class.js';
 import Post from './models/Post.js';
 import WorkoutPlan from './models/WorkoutPlan.js';
 import DietPlan from './models/DietPlan.js';
+import Plan from './models/Plan.js';
 
 const MONGO_URI = 'mongodb://127.0.0.1:27017/gym-app';
 
 const seed = async () => {
   try {
+    console.log('Connecting to database...');
     await mongoose.connect(MONGO_URI);
     console.log('MongoDB Connected for seeding...');
 
@@ -33,6 +35,7 @@ const seed = async () => {
     await Post.deleteMany({});
     await WorkoutPlan.deleteMany({});
     await DietPlan.deleteMany({});
+    await Plan.deleteMany({});
 
     // 2. Create Gym
     const gym = await Gym.create({
@@ -87,7 +90,29 @@ const seed = async () => {
       console.log('Created Trainer:', user.email);
     }
 
-    // 5. Create 20 Fake Members with Varied Profiles, Join Dates, and Statuses
+    // 5. Create Plans
+    console.log('Seeding Plans...');
+    const plansData = [
+      { name: 'Weekly Basic', duration_days: 7, price: 500, description: 'Gym floor access, basic locker access' },
+      { name: 'Monthly Elite', duration_days: 30, price: 2000, description: 'Gym floor access, cardio zone, 1 trainer consultation, group classes' },
+      { name: 'Yearly VIP', duration_days: 365, price: 18000, description: 'Full access, free towel & locker, all group classes, steam room, personal trainer consult' },
+    ];
+
+    const plans = [];
+    for (const p of plansData) {
+      const planObj = await Plan.create({
+        gym_id: gym._id,
+        name: p.name,
+        duration_days: p.duration_days,
+        price: p.price,
+        description: p.description,
+        is_active: true,
+      });
+      plans.push(planObj);
+      console.log(`Created Plan: ${planObj.name}`);
+    }
+
+    // 6. Create 20 Fake Members with Varied Profiles, Join Dates, and Statuses
     const membersData = [
       { name: 'Peter Parker', email: 'member1@ironpulse.com', plan: 'Monthly Elite', status: 'active', joinDaysAgo: 10 },
       { name: 'Barry Allen', email: 'member2@ironpulse.com', plan: 'Yearly VIP', status: 'active', joinDaysAgo: 90 },
@@ -130,10 +155,14 @@ const seed = async () => {
       const joinDate = new Date();
       joinDate.setDate(joinDate.getDate() - data.joinDaysAgo);
 
+      // Find plan_id
+      const matchedPlan = plans.find(p => p.name === data.plan);
+
       const member = await Member.create({
         user_id: user._id,
         gym_id: gym._id,
-        membership_plan: data.plan,
+        plan_id: matchedPlan ? matchedPlan._id : null,
+        plan_name: matchedPlan ? matchedPlan.name : data.plan,
         status: data.status,
         assigned_trainer_id: assignedTrainer._id,
         assigned_dietitian_id: assignedTrainer._id,
@@ -144,28 +173,23 @@ const seed = async () => {
       console.log(`Created Member: ${user.name} (${user.email}), status: ${data.status}`);
     }
 
-    // 6. Create at least 10 Payment Records (mix of paid/pending/unpaid/overdue)
+    // 7. Create at least 10 Payment Records (mix of paid/pending/unpaid/overdue)
     console.log('Seeding Payment records...');
-    const paymentPlansPrice = {
-      'Weekly Basic': 15,
-      'Monthly Elite': 50,
-      'Yearly VIP': 500,
-    };
 
     // We will generate payments for some of our members
     const paymentConfigs = [
-      { member: members[0], status: 'paid', amount: 50, daysAgo: 5, method: 'upi' },
-      { member: members[1], status: 'paid', amount: 500, daysAgo: 80, method: 'card' },
-      { member: members[2], status: 'pending', amount: 15, daysAgo: 0, method: 'upi' },
-      { member: members[3], status: 'paid', amount: 500, daysAgo: 190, method: 'bank_transfer' },
-      { member: members[4], status: 'paid', amount: 50, daysAgo: 110, method: 'card' },
-      { member: members[5], status: 'unpaid', amount: 15, daysAgo: 45, method: 'cash' }, // overdue
-      { member: members[7], status: 'paid', amount: 50, daysAgo: 40, method: 'upi' },
-      { member: members[8], status: 'paid', amount: 500, daysAgo: 55, method: 'bank_transfer' },
-      { member: members[9], status: 'unpaid', amount: 15, daysAgo: 60, method: 'card' }, // overdue
-      { member: members[10], status: 'pending', amount: 50, daysAgo: 2, method: 'upi' },
-      { member: members[11], status: 'paid', amount: 500, daysAgo: 75, method: 'card' },
-      { member: members[14], status: 'paid', amount: 15, daysAgo: 3, method: 'cash' },
+      { member: members[0], status: 'paid', amount: 2000, daysAgo: 5, method: 'upi' },
+      { member: members[1], status: 'paid', amount: 18000, daysAgo: 80, method: 'card' },
+      { member: members[2], status: 'pending', amount: 500, daysAgo: 0, method: 'upi' },
+      { member: members[3], status: 'paid', amount: 18000, daysAgo: 190, method: 'bank_transfer' },
+      { member: members[4], status: 'paid', amount: 2000, daysAgo: 110, method: 'card' },
+      { member: members[5], status: 'unpaid', amount: 500, daysAgo: 45, method: 'cash' }, // overdue
+      { member: members[7], status: 'paid', amount: 2000, daysAgo: 40, method: 'upi' },
+      { member: members[8], status: 'paid', amount: 18000, daysAgo: 55, method: 'bank_transfer' },
+      { member: members[9], status: 'unpaid', amount: 500, daysAgo: 60, method: 'card' }, // overdue
+      { member: members[10], status: 'pending', amount: 2000, daysAgo: 2, method: 'upi' },
+      { member: members[11], status: 'paid', amount: 18000, daysAgo: 75, method: 'card' },
+      { member: members[14], status: 'paid', amount: 500, daysAgo: 3, method: 'cash' },
     ];
 
     for (const p of paymentConfigs) {
@@ -183,11 +207,12 @@ const seed = async () => {
         due_date: dueDate,
         status: p.status,
         payment_method: p.method,
+        plan_id: p.member.plan_id || null,
       });
     }
     console.log(`Seeded ${paymentConfigs.length} payment records.`);
 
-    // 7. Create at least 3-5 Classes with Different Schedules
+    // 8. Create at least 3-5 Classes with Different Schedules
     console.log('Seeding Classes...');
     const classData = [
       { name: 'HIIT & Core Conditioning', trainer: trainers[0], hoursFromNow: 2, cap: 15 },
@@ -211,7 +236,7 @@ const seed = async () => {
     }
     console.log(`Seeded ${classData.length} classes.`);
 
-    // 8. Create Workout & Diet Plans Linked to first member (Peter Parker)
+    // 9. Create Workout & Diet Plans Linked to first member (Peter Parker)
     console.log('Seeding Workout & Diet plans...');
     const memberId = members[0]._id;
     const trainerId = trainers[0]._id;
@@ -268,7 +293,7 @@ const seed = async () => {
     }
     console.log('Seeded Member workout and diet routines successfully.');
 
-    // 9. Seed Community Feed Posts (At least 3-4 posts)
+    // 10. Seed Community Feed Posts (At least 3-4 posts)
     console.log('Seeding Community Feed Posts...');
     const postsData = [
       {

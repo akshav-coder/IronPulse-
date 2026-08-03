@@ -13,7 +13,12 @@ const memberSchema = new mongoose.Schema(
       ref: 'Gym',
       required: [true, 'Please link member to a gym'],
     },
-    membership_plan: {
+    plan_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Plan',
+      default: null,
+    },
+    plan_name: {
       type: String,
       trim: true,
       default: null,
@@ -27,8 +32,8 @@ const memberSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'pending', 'pending_approval', 'rejected'],
-      default: 'pending_approval',
+      enum: ['active', 'inactive', 'pending', 'pending_approval', 'rejected', 'pending_payment'],
+      default: 'pending_payment',
     },
     assigned_trainer_id: {
       type: mongoose.Schema.Types.ObjectId,

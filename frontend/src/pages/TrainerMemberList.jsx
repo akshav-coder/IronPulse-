@@ -153,7 +153,7 @@ const TrainerMemberList = () => {
                         <div>{member.user_id?.email}</div>
                         {member.user_id?.phone && <div className="text-[10px] text-slate-500 mt-0.5">{member.user_id.phone}</div>}
                       </td>
-                      <td className="py-4 px-4 text-slate-300">{member.membership_plan}</td>
+                      <td className="py-4 px-4 text-slate-300">{member.plan_name}</td>
                       <td className="py-4 px-4">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase border ${
                           activeSession 

@@ -58,8 +58,9 @@ export const registerUser = async (req, res) => {
       await Member.create({
         user_id: user._id,
         gym_id: user.gym_id,
-        membership_plan: null,
-        status: 'pending_approval',
+        plan_id: null,
+        plan_name: null,
+        status: 'pending_payment',
         assigned_trainer_id: null,
         join_date: new Date(),
       });

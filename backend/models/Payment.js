@@ -21,6 +21,23 @@ const paymentSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    plan_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Plan',
+      default: null,
+    },
+    razorpay_order_id: {
+      type: String,
+      default: null,
+    },
+    razorpay_payment_id: {
+      type: String,
+      default: null,
+    },
+    razorpay_signature: {
+      type: String,
+      default: null,
+    },
     due_date: {
       type: Date,
       required: [true, 'Please add a payment due date'],
@@ -32,7 +49,7 @@ const paymentSchema = new mongoose.Schema(
     },
     payment_method: {
       type: String,
-      enum: ['cash', 'card', 'upi', 'bank_transfer'],
+      enum: ['cash', 'card', 'upi', 'bank_transfer', 'razorpay'],
       required: [true, 'Please add a payment method'],
     },
   },

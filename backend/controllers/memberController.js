@@ -1,5 +1,7 @@
 import Member from '../models/Member.js';
 import User from '../models/User.js';
+import Plan from '../models/Plan.js';
+import mongoose from 'mongoose';
 import fs from 'fs';
 import csv from 'csv-parser';
 
@@ -42,11 +44,29 @@ export const createMember = async (req, res) => {
       role: 'member',
     });
 
+    // Look up Plan details
+    let plan = null;
+    let finalPlanName = membership_plan;
+    let finalPlanId = null;
+
+    if (mongoose.Types.ObjectId.isValid(membership_plan)) {
+      plan = await Plan.findById(membership_plan);
+    } else {
+      plan = await Plan.findOne({ name: membership_plan, gym_id: req.user.gym_id });
+    }
+
+    if (plan) {
+      finalPlanId = plan._id;
+      finalPlanName = plan.name;
+    }
+
     // Create Member profile
     const member = await Member.create({
       user_id: user._id,
       gym_id: req.user.gym_id,
-      membership_plan,
+      plan_id: finalPlanId,
+      plan_name: finalPlanName,
+      status: 'active', // Direct owner creation is active
       join_date: join_date || Date.now(),
       expiry_date,
       assigned_trainer_id: assigned_trainer_id || null,
@@ -135,7 +155,24 @@ export const updateMember = async (req, res) => {
     }
 
     // Update member fields
-    member.membership_plan = membership_plan || member.membership_plan;
+    if (membership_plan !== undefined) {
+      let plan = null;
+      let finalPlanName = membership_plan;
+      let finalPlanId = null;
+
+      if (mongoose.Types.ObjectId.isValid(membership_plan)) {
+        plan = await Plan.findById(membership_plan);
+      } else {
+        plan = await Plan.findOne({ name: membership_plan, gym_id: member.gym_id });
+      }
+
+      if (plan) {
+        finalPlanId = plan._id;
+        finalPlanName = plan.name;
+      }
+      member.plan_id = finalPlanId;
+      member.plan_name = finalPlanName;
+    }
     member.expiry_date = expiry_date !== undefined ? expiry_date : member.expiry_date;
     member.status = status || member.status;
     member.assigned_trainer_id = assigned_trainer_id !== undefined ? assigned_trainer_id : member.assigned_trainer_id;
@@ -265,11 +302,29 @@ export const importMembersCsv = async (req, res) => {
           role: 'member',
         });
 
+        // Look up Plan details for import row
+        let plan = null;
+        let finalPlanName = membership_plan;
+        let finalPlanId = null;
+
+        if (mongoose.Types.ObjectId.isValid(membership_plan)) {
+          plan = await Plan.findById(membership_plan);
+        } else {
+          plan = await Plan.findOne({ name: membership_plan, gym_id: req.user.gym_id });
+        }
+
+        if (plan) {
+          finalPlanId = plan._id;
+          finalPlanName = plan.name;
+        }
+
         // Create member
         await Member.create({
           user_id: user._id,
           gym_id: req.user.gym_id,
-          membership_plan,
+          plan_id: finalPlanId,
+          plan_name: finalPlanName,
+          status: 'active',
           join_date: new Date(),
         });
 
@@ -325,12 +380,7 @@ export const approvePendingMember = async (req, res) => {
       throw new Error('Not authorized to approve signups');
     }
 
-    const { membership_plan, assigned_trainer_id, assigned_dietitian_id } = req.body;
-
-    if (!membership_plan) {
-      res.status(400);
-      throw new Error('Please specify a membership plan for approval');
-    }
+    const { assigned_trainer_id, assigned_dietitian_id } = req.body;
 
     const member = await Member.findById(req.params.id);
     if (!member) {
@@ -344,7 +394,6 @@ export const approvePendingMember = async (req, res) => {
     }
 
     member.status = 'active';
-    member.membership_plan = membership_plan;
     member.assigned_trainer_id = assigned_trainer_id || null;
     member.assigned_dietitian_id = assigned_dietitian_id || null;
     member.rejection_reason = null;
