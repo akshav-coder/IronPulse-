@@ -73,7 +73,7 @@ const Auth = () => {
             <Dumbbell size={24} className="text-white" />
           </div>
           <h2 className="text-2xl font-extrabold text-white tracking-wide">
-            <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">PULSE</span> TRACKER
+            <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">IRON PULSE</span>
           </h2>
           <p className="text-slate-500 text-xs mt-1">
             Build strength. Track progress. Achieve goals.

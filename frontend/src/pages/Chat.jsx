@@ -118,7 +118,7 @@ const Chat = () => {
       {/* Header */}
       <div>
         <h2 className="text-3xl font-extrabold text-white">
-          Pulse <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Messenger</span>
+          IronPulse <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Messenger</span>
         </h2>
         <p className="text-slate-400 text-sm mt-1">
           Instant messaging conversation channel between you and your assigned {isTrainer ? 'trainees' : 'trainer'}.

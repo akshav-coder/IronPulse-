@@ -185,7 +185,7 @@ const MemberWorkoutPlan = () => {
                 <div className="border-t border-slate-950 pt-3 flex justify-between items-center text-[10px] text-slate-500 font-medium">
                   <span className="flex items-center gap-1">
                     <User size={11} className="text-indigo-400" />
-                    Trainer: {member?.assigned_trainer_id?.name || 'Pulse Coach'}
+                    Trainer: {member?.assigned_trainer_id?.name || 'IronPulse Coach'}
                   </span>
                   <span>Routine Schedule</span>
                 </div>

@@ -215,7 +215,7 @@ const Feed = () => {
       {/* Header */}
       <div>
         <h2 className="text-3xl font-extrabold text-white">
-          Pulse <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Feed</span>
+          IronPulse <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Feed</span>
         </h2>
         <p className="text-slate-400 text-sm mt-1">
           Stay updated with stories, announcements, and motivation shared by your gym community.

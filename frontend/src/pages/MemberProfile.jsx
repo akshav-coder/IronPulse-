@@ -72,7 +72,7 @@ const MemberProfile = () => {
         key: key_id,
         amount: amount,
         currency: currency,
-        name: 'Pulse Fitness Center',
+        name: 'IronPulse Fitness Center',
         description: 'Settlement of Gym Membership Invoices',
         order_id: order_id,
         handler: async function (response) {

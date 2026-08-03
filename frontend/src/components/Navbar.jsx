@@ -100,7 +100,7 @@ const Navbar = () => {
       <div className="nav-container">
         <Link to="/" className="logo">
           <Dumbbell size={28} style={{ stroke: 'url(#logo-grad)' }} />
-          <span>PULSE</span>
+          <span>IRON PULSE</span>
           <svg width="0" height="0" style={{ position: 'absolute' }}>
             <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#6366f1" />
