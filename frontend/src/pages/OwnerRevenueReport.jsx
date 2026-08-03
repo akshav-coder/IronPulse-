@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { DollarSign, AlertCircle, Calendar, CreditCard, Layers } from 'lucide-react';
+import { IndianRupee, AlertCircle, Calendar, CreditCard, Layers } from 'lucide-react';
 
 const OwnerRevenueReport = () => {
   const [revenueData, setRevenueData] = useState({
@@ -55,7 +55,7 @@ const OwnerRevenueReport = () => {
       return (
         <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg shadow-xl text-xs">
           <p className="font-bold text-slate-300 mb-1">{`Month: ${label}`}</p>
-          <p className="font-extrabold text-indigo-400">{`Revenue: $${payload[0].value}`}</p>
+          <p className="font-extrabold text-indigo-400">{`Revenue: ₹${payload[0].value}`}</p>
         </div>
       );
     }
@@ -78,11 +78,11 @@ const OwnerRevenueReport = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-lg flex items-center gap-4">
           <div className="p-3 bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 rounded-lg">
-            <DollarSign size={22} />
+            <IndianRupee size={22} />
           </div>
           <div>
             <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Gross Incomes Paid</span>
-            <span className="text-2xl font-black text-slate-100">${totalPaidRevenue.toLocaleString()}</span>
+            <span className="text-2xl font-black text-slate-100">₹{totalPaidRevenue.toLocaleString()}</span>
           </div>
         </div>
 
@@ -92,7 +92,7 @@ const OwnerRevenueReport = () => {
           </div>
           <div>
             <span className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Outstanding Dues</span>
-            <span className="text-2xl font-black text-slate-100">${revenueData.pendingTotal.toLocaleString()}</span>
+            <span className="text-2xl font-black text-slate-100">₹{revenueData.pendingTotal.toLocaleString()}</span>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ const OwnerRevenueReport = () => {
               {revenueData.methodRevenue.map((item) => (
                 <div key={item.method} className="py-3.5 flex justify-between items-center text-sm">
                   <span className="capitalize font-semibold text-slate-400">{item.method.replace('_', ' ')}</span>
-                  <span className="font-extrabold text-slate-200">${item.revenue.toLocaleString()}</span>
+                  <span className="font-extrabold text-slate-200">₹{item.revenue.toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -187,7 +187,7 @@ const OwnerRevenueReport = () => {
                         AUDITED
                       </span>
                     </td>
-                    <td className="py-4 px-4 font-extrabold text-slate-100 text-right">${item.revenue.toLocaleString()}</td>
+                    <td className="py-4 px-4 font-extrabold text-slate-100 text-right">₹{item.revenue.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>

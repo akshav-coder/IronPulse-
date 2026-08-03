@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api';
 import { useAuth } from '../context/AuthContext';
-import { Users, DollarSign, AlertCircle, Shield, ArrowRight, Activity, Calendar } from 'lucide-react';
+import { Users, IndianRupee, AlertCircle, Shield, ArrowRight, Activity, Calendar } from 'lucide-react';
 
 const OwnerDashboard = () => {
   const { user } = useAuth();
@@ -138,11 +138,11 @@ const OwnerDashboard = () => {
           <div className="bg-slate-900 border border-slate-800/80 rounded-xl p-5 shadow-md flex justify-between items-start">
             <div className="space-y-1">
               <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">Monthly Revenue</span>
-              <div className="text-2xl font-extrabold text-slate-100">${metrics.monthlyRevenue.toLocaleString()}</div>
+              <div className="text-2xl font-extrabold text-slate-100">₹{metrics.monthlyRevenue.toLocaleString()}</div>
               <span className="text-xs text-slate-500 block">Paid invoices sum</span>
             </div>
             <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-              <DollarSign size={18} />
+              <IndianRupee size={18} />
             </div>
           </div>
 
@@ -216,7 +216,7 @@ const OwnerDashboard = () => {
                           <div className="font-semibold text-slate-200">{p.member_id?.user_id?.name || 'Unknown User'}</div>
                           <div className="text-[10px] text-slate-500">{p.payment_method.toUpperCase()}</div>
                         </td>
-                        <td className="py-3 px-3 font-bold text-slate-200">${p.amount}</td>
+                        <td className="py-3 px-3 font-bold text-slate-200">₹{p.amount}</td>
                         <td className="py-3 px-3 text-slate-400">{new Date(p.due_date).toLocaleDateString()}</td>
                         <td className="py-3 px-3 text-right">
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase border ${

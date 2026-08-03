@@ -162,7 +162,7 @@ const OwnerPaymentList = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Billing Amount ($)</label>
+              <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Billing Amount (₹)</label>
               <input
                 type="number"
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
@@ -250,7 +250,7 @@ const OwnerPaymentList = () => {
                       <div className="font-bold text-slate-200">{p.member_id?.user_id?.name || 'Unknown Member'}</div>
                       <div className="text-xs text-slate-500">{p.member_id?.user_id?.email}</div>
                     </td>
-                    <td className="py-4 px-4 font-extrabold text-slate-200">${p.amount}</td>
+                    <td className="py-4 px-4 font-extrabold text-slate-200">₹{p.amount}</td>
                     <td className="py-4 px-4 text-slate-400">{new Date(p.due_date).toLocaleDateString()}</td>
                     <td className="py-4 px-4 text-slate-500">
                       {p.payment_date ? new Date(p.payment_date).toLocaleDateString() : '—'}

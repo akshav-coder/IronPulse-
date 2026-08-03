@@ -318,7 +318,7 @@ const MemberProfile = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Amount Due</div>
-                        <div className="text-lg font-extrabold text-slate-200">${p.amount}</div>
+                        <div className="text-lg font-extrabold text-slate-200">₹{p.amount}</div>
                       </div>
                       <span className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wider border ${
                         p.status === 'paid' 
