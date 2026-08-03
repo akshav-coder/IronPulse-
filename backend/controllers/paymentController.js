@@ -273,7 +273,7 @@ export const createOrderForPlan = async (req, res) => {
       const options = {
         amount: Math.round(plan.price * 100), // in paise
         currency: 'INR',
-        receipt: `plan_reg_${member._id}_${Date.now()}`,
+        receipt: `reg_${member._id.toString()}`,
       };
       order = await getRazorpayInstance().orders.create(options);
     }
@@ -395,7 +395,7 @@ export const razorpayWebhook = async (req, res) => {
       
       if (paymentId) {
         // If it starts with plan_reg, handle it as registration payment
-        if (typeof paymentId === 'string' && paymentId.startsWith('plan_reg_')) {
+        if (typeof paymentId === 'string' && (paymentId.startsWith('plan_reg_') || paymentId.startsWith('reg_'))) {
           console.log('[Webhook] Registration order paid. Waiting for frontend signature verification.');
         } else {
           const payment = await Payment.findById(paymentId);
