@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator, RefreshControl, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 
 const OwnerMemberListScreen = ({ navigation }: any) => {
@@ -58,7 +59,7 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <View className="flex-1 px-5 pt-4">
 
         {/* Header */}

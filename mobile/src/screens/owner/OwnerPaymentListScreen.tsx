@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, SafeAreaView, Modal, TextInput, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Modal, TextInput, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 
 const OwnerPaymentListScreen = ({ navigation }: any) => {
@@ -85,7 +86,7 @@ const OwnerPaymentListScreen = ({ navigation }: any) => {
     .reduce((sum, p) => sum + (p.amount || 0), 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <View className="flex-1 px-5 pt-4">
 
         {/* Header */}

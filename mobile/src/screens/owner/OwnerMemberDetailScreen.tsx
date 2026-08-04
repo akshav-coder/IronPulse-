@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, SafeAreaView, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 
 const OwnerMemberDetailScreen = ({ route, navigation }: any) => {
@@ -80,7 +81,7 @@ const OwnerMemberDetailScreen = ({ route, navigation }: any) => {
   const assignedTrainer = member?.assigned_trainer_id?.name || member?.assigned_trainer_name || 'Unassigned';
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 16 }}>
         
         {/* Navigation Back Header */}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import OwnerDashboardScreen from '../screens/owner/OwnerDashboardScreen';
@@ -37,6 +38,7 @@ const StaffStack = () => (
 
 const OwnerNavigator = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'payments' | 'staff'>('dashboard');
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
@@ -61,9 +63,16 @@ const OwnerNavigator = () => {
         {activeTab === 'staff' && <StaffStack />}
       </View>
 
-      {/* Custom Bottom Tab Bar */}
-      <SafeAreaView style={{ backgroundColor: '#FFFFFF' }}>
-        <View className="flex-row border-t border-slate-200 bg-white py-2 px-3 justify-around items-center">
+      {/* Safe Area Dynamic Bottom Tab Bar */}
+      <View
+        style={{
+          paddingBottom: Math.max(insets.bottom, 10),
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#E2E8F0',
+        }}
+      >
+        <View className="flex-row py-2 px-3 justify-around items-center">
           <TouchableOpacity
             onPress={() => setActiveTab('dashboard')}
             className="items-center py-1 flex-1"
@@ -104,7 +113,7 @@ const OwnerNavigator = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </View>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,35 +20,30 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
 
   const fetchDashboardStats = useCallback(async () => {
     try {
-      const res = await client.get('/dashboard/owner');
-      const data = res.data;
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
+      const [dashRes, membersRes] = await Promise.all([
+        client.get(`/dashboard/owner/${gymId}`),
+        client.get('/members').catch(() => ({ data: [] })),
+      ]);
+
+      const dashData = dashRes.data;
+      const allMembers = Array.isArray(membersRes.data) ? membersRes.data : [];
+      const pendingCount = allMembers.filter((m: any) => m.status === 'pending_approval' || m.status === 'pending').length;
+
       setStats({
-        totalMembers: data.totalMembers || data.memberStats?.total || 0,
-        activeMembers: data.activeMembers || data.memberStats?.active || 0,
-        pendingApprovals: data.pendingApprovals || data.pendingCount || 0,
-        monthlyRevenue: data.monthlyRevenue || data.revenueThisMonth || 0,
-        activeTrainers: data.activeTrainers || data.trainerCount || 0,
+        totalMembers: dashData.totalMembers || 0,
+        activeMembers: dashData.activeMembers || 0,
+        pendingApprovals: pendingCount,
+        monthlyRevenue: dashData.monthlyRevenue || 0,
+        activeTrainers: dashData.activeTrainers || 0,
       });
     } catch (error) {
       console.error('Error fetching owner dashboard stats:', error);
-      // Fallback request
-      try {
-        const statsRes = await client.get('/dashboard/stats');
-        setStats({
-          totalMembers: statsRes.data.totalMembers || 0,
-          activeMembers: statsRes.data.activeMembers || 0,
-          pendingApprovals: statsRes.data.pendingMembers || 0,
-          monthlyRevenue: statsRes.data.totalRevenue || 0,
-          activeTrainers: statsRes.data.trainers || 0,
-        });
-      } catch (e) {
-        console.error('Fallback stats error:', e);
-      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -59,9 +55,9 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 24 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#4F46E5']} />}
       >
         {/* Header */}
@@ -72,7 +68,7 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
           </View>
           <TouchableOpacity
             onPress={logout}
-            className="px-3 py-1.5 bg-slate-200 rounded-lg"
+            className="px-3 py-1.5 bg-slate-200 rounded-lg active:bg-slate-300"
           >
             <Text className="text-xs font-bold text-slate-700">Logout</Text>
           </TouchableOpacity>
@@ -90,7 +86,7 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
             <View className="bg-[#4F46E5] rounded-3xl p-6 shadow-md shadow-indigo-500/20">
               <Text className="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Monthly Revenue</Text>
               <Text className="text-white text-3xl font-black mt-2">
-                ₹{stats?.monthlyRevenue.toLocaleString('en-IN') || 0}
+                ₹{(stats?.monthlyRevenue || 0).toLocaleString('en-IN')}
               </Text>
               <View className="flex-row items-center mt-3 bg-indigo-500/30 px-3 py-1.5 rounded-full self-start">
                 <Text className="text-indigo-100 text-[10px] font-bold">Updated Live • Indian Rupees</Text>
