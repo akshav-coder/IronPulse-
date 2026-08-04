@@ -1,15 +1,14 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-// Retrieve API URL from environment variables, defaulting to live public tunnel URL
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://metal-chefs-pick.loca.lt/api';
+// Live public API endpoint via Serveo tunnel
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://d231b5872dc16128-120-56-109-226.serveousercontent.com/api';
 
 const client = axios.create({
   baseURL: API_URL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
-    'Bypass-Tunnel-Reminder': 'true',
   },
 });
 
