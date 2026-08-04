@@ -76,7 +76,7 @@ const TrainerMemberDetailScreen = ({ route, navigation }: any) => {
           <View className="flex-row justify-between items-center mb-3">
             <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned Workout Plan</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('TrainerWorkouts', { screen: 'CreateWorkoutPlan', params: { preselectedMemberId: memberId } })}
+              onPress={() => navigation.navigate('CreateWorkoutPlan', { preselectedMemberId: memberId })}
               className="bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-xl"
             >
               <Text className="text-indigo-600 text-xs font-bold">+ Assign New</Text>
@@ -105,7 +105,7 @@ const TrainerMemberDetailScreen = ({ route, navigation }: any) => {
           <View className="flex-row justify-between items-center mb-3">
             <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Assigned Diet Plan</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('TrainerDiets', { screen: 'CreateDietPlan', params: { preselectedMemberId: memberId } })}
+              onPress={() => navigation.navigate('CreateDietPlan', { preselectedMemberId: memberId })}
               className="bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl"
             >
               <Text className="text-emerald-700 text-xs font-bold">+ Assign New</Text>

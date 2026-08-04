@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import TrainerDashboardScreen from '../screens/trainer/TrainerDashboardScreen';
@@ -13,27 +13,6 @@ import TrainerCreateDietPlanScreen from '../screens/trainer/TrainerCreateDietPla
 
 const Stack = createNativeStackNavigator();
 
-const ClientsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="TrainerClientList" component={TrainerMemberListScreen} />
-    <Stack.Screen name="TrainerClientDetail" component={TrainerMemberDetailScreen} />
-  </Stack.Navigator>
-);
-
-const WorkoutsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="TrainerWorkoutList" component={TrainerWorkoutPlanScreen} />
-    <Stack.Screen name="CreateWorkoutPlan" component={TrainerCreateWorkoutPlanScreen} />
-  </Stack.Navigator>
-);
-
-const DietsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="TrainerDietList" component={TrainerDietPlanScreen} />
-    <Stack.Screen name="CreateDietPlan" component={TrainerCreateDietPlanScreen} />
-  </Stack.Navigator>
-);
-
 const TrainerNavigator = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'clients' | 'workouts' | 'diets'>('dashboard');
   const insets = useSafeAreaInsets();
@@ -41,24 +20,49 @@ const TrainerNavigator = () => {
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <View style={{ flex: 1 }}>
-        {activeTab === 'dashboard' && (
-          <TrainerDashboardScreen
-            navigation={{
-              navigate: (screen: string, params?: any) => {
-                if (screen === 'TrainerClientsTab') {
-                  setActiveTab('clients');
-                } else if (screen === 'TrainerWorkouts') {
-                  setActiveTab('workouts');
-                } else if (screen === 'TrainerDiets') {
-                  setActiveTab('diets');
-                }
-              },
-            }}
-          />
-        )}
-        {activeTab === 'clients' && <ClientsStack />}
-        {activeTab === 'workouts' && <WorkoutsStack />}
-        {activeTab === 'diets' && <DietsStack />}
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {activeTab === 'dashboard' && (
+            <Stack.Screen name="TrainerDashboard">
+              {(props) => (
+                <TrainerDashboardScreen
+                  {...props}
+                  navigation={{
+                    ...props.navigation,
+                    navigate: (screen: string, params?: any) => {
+                      if (screen === 'TrainerClientsTab') setActiveTab('clients');
+                      else if (screen === 'TrainerWorkouts') setActiveTab('workouts');
+                      else if (screen === 'TrainerDiets') setActiveTab('diets');
+                      else props.navigation.navigate(screen as never, params as never);
+                    },
+                  }}
+                />
+              )}
+            </Stack.Screen>
+          )}
+
+          {activeTab === 'clients' && (
+            <>
+              <Stack.Screen name="TrainerClientList" component={TrainerMemberListScreen} />
+              <Stack.Screen name="TrainerClientDetail" component={TrainerMemberDetailScreen} />
+              <Stack.Screen name="CreateWorkoutPlan" component={TrainerCreateWorkoutPlanScreen} />
+              <Stack.Screen name="CreateDietPlan" component={TrainerCreateDietPlanScreen} />
+            </>
+          )}
+
+          {activeTab === 'workouts' && (
+            <>
+              <Stack.Screen name="TrainerWorkoutList" component={TrainerWorkoutPlanScreen} />
+              <Stack.Screen name="CreateWorkoutPlan" component={TrainerCreateWorkoutPlanScreen} />
+            </>
+          )}
+
+          {activeTab === 'diets' && (
+            <>
+              <Stack.Screen name="TrainerDietList" component={TrainerDietPlanScreen} />
+              <Stack.Screen name="CreateDietPlan" component={TrainerCreateDietPlanScreen} />
+            </>
+          )}
+        </Stack.Navigator>
       </View>
 
       {/* Safe Area Dynamic Bottom Tab Bar */}
