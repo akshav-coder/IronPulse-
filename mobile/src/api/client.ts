@@ -1,14 +1,15 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-// Retrieve API URL from environment variables, defaulting to laptop Wi-Fi IP
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.38:5000/api';
+// Retrieve API URL from environment variables, defaulting to live public tunnel URL
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://metal-chefs-pick.loca.lt/api';
 
 const client = axios.create({
   baseURL: API_URL,
-  timeout: 10000, // 10 second timeout to fail fast on network issues
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
+    'Bypass-Tunnel-Reminder': 'true',
   },
 });
 
