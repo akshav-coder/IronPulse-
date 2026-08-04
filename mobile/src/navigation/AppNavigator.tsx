@@ -8,6 +8,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import OwnerNavigator from './OwnerNavigator';
 import TrainerNavigator from './TrainerNavigator';
+import MemberNavigator from './MemberNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,8 @@ export const AppNavigator = () => {
           <Stack.Screen name="OwnerRoot" component={OwnerNavigator} />
         ) : role === 'trainer' || role === 'staff' ? (
           <Stack.Screen name="TrainerRoot" component={TrainerNavigator} />
+        ) : role === 'member' ? (
+          <Stack.Screen name="MemberRoot" component={MemberNavigator} />
         ) : (
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
         )}
