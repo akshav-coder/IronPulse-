@@ -19,18 +19,10 @@ const OwnerPlanListScreen = ({ navigation }: any) => {
 
   const fetchPlans = useCallback(async () => {
     try {
-      // Owner fetches all plans including inactive ones
-      const res = await client.get('/plans/all');
+      const res = await client.get('/plans');
       setPlans(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Error fetching plans:', err);
-      // Fallback
-      try {
-        const fallbackRes = await client.get('/plans');
-        setPlans(Array.isArray(fallbackRes.data) ? fallbackRes.data : []);
-      } catch (e) {
-        console.error('Fallback plans error:', e);
-      }
     } finally {
       setLoading(false);
       setRefreshing(false);
