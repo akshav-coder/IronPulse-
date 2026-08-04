@@ -7,6 +7,7 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import OwnerNavigator from './OwnerNavigator';
+import TrainerNavigator from './TrainerNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,8 @@ export const AppNavigator = () => {
           </>
         ) : user.role === 'owner' ? (
           <Stack.Screen name="OwnerRoot" component={OwnerNavigator} />
+        ) : user.role === 'trainer' ? (
+          <Stack.Screen name="TrainerRoot" component={TrainerNavigator} />
         ) : (
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
         )}
