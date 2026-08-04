@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Modal, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 const OwnerClassScheduleScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
   const [classes, setClasses] = useState<any[]>([]);
   const [trainers, setTrainers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,9 +21,10 @@ const OwnerClassScheduleScreen = ({ navigation }: any) => {
 
   const fetchClassesData = useCallback(async () => {
     try {
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       const [classRes, staffRes] = await Promise.all([
-        client.get('/classes'),
-        client.get('/staff'),
+        client.get('/classes').catch(() => ({ data: [] })),
+        client.get(`/staff/gym/${gymId}`).catch(() => ({ data: [] })),
       ]);
       setClasses(Array.isArray(classRes.data) ? classRes.data : []);
       const staffList = Array.isArray(staffRes.data) ? staffRes.data : [];
@@ -32,7 +35,7 @@ const OwnerClassScheduleScreen = ({ navigation }: any) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchClassesData();
@@ -47,7 +50,9 @@ const OwnerClassScheduleScreen = ({ navigation }: any) => {
     if (!name.trim() || !scheduleTime.trim()) return;
     setSubmitting(true);
     try {
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       await client.post('/classes', {
+        gym_id: gymId,
         name: name.trim(),
         schedule_time: scheduleTime.trim(),
         trainer_id: selectedTrainerId || null,

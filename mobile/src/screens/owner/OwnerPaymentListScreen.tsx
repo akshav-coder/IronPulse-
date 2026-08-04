@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Modal, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 const OwnerPaymentListScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -20,7 +22,8 @@ const OwnerPaymentListScreen = ({ navigation }: any) => {
 
   const fetchPayments = useCallback(async () => {
     try {
-      const res = await client.get('/payments');
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
+      const res = await client.get(`/payments/gym/${gymId}`);
       setPayments(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Error fetching payments:', err);
@@ -28,20 +31,21 @@ const OwnerPaymentListScreen = ({ navigation }: any) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   const fetchFormData = useCallback(async () => {
     try {
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       const [membersRes, plansRes] = await Promise.all([
-        client.get('/members'),
-        client.get('/plans'),
+        client.get(`/members/gym/${gymId}`).catch(() => ({ data: [] })),
+        client.get('/plans').catch(() => ({ data: [] })),
       ]);
       setMembers(Array.isArray(membersRes.data) ? membersRes.data : []);
       setPlans(Array.isArray(plansRes.data) ? plansRes.data : []);
     } catch (err) {
       console.error('Error fetching modal options:', err);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchPayments();
@@ -57,7 +61,9 @@ const OwnerPaymentListScreen = ({ navigation }: any) => {
     if (!selectedMemberId || !amount) return;
     setSubmitting(true);
     try {
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       await client.post('/payments', {
+        gym_id: gymId,
         member_id: selectedMemberId,
         plan_id: selectedPlanId || null,
         amount: parseFloat(amount),

@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 const OwnerStaffListScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
   const [staff, setStaff] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -19,7 +21,8 @@ const OwnerStaffListScreen = ({ navigation }: any) => {
 
   const fetchStaff = useCallback(async () => {
     try {
-      const res = await client.get('/staff');
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
+      const res = await client.get(`/staff/gym/${gymId}`);
       setStaff(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Error fetching staff list:', err);
@@ -27,7 +30,7 @@ const OwnerStaffListScreen = ({ navigation }: any) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchStaff();
@@ -46,14 +49,14 @@ const OwnerStaffListScreen = ({ navigation }: any) => {
     setSubmitting(true);
     setErrorMsg('');
     try {
-      const dummyGymId = '66810a6bb8c4d284724b01ab';
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       await client.post('/users/register', {
         name: name.trim(),
         email: email.trim(),
         password: password.trim(),
         role: 'trainer',
         phone: phone.trim(),
-        gym_id: dummyGymId,
+        gym_id: gymId,
       });
 
       setModalVisible(false);

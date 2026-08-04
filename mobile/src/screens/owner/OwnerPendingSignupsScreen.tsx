@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 const OwnerPendingSignupsScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
   const [pendingMembers, setPendingMembers] = useState<any[]>([]);
   const [trainers, setTrainers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,9 +18,10 @@ const OwnerPendingSignupsScreen = ({ navigation }: any) => {
 
   const fetchData = useCallback(async () => {
     try {
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
       const [membersRes, staffRes] = await Promise.all([
-        client.get('/members'),
-        client.get('/staff'),
+        client.get(`/members/gym/${gymId}`),
+        client.get(`/staff/gym/${gymId}`),
       ]);
 
       const allMembers = Array.isArray(membersRes.data) ? membersRes.data : [];
@@ -32,7 +35,7 @@ const OwnerPendingSignupsScreen = ({ navigation }: any) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchData();

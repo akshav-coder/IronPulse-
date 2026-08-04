@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TextInput, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 const OwnerMemberListScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -12,7 +14,8 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
 
   const fetchMembers = useCallback(async () => {
     try {
-      const res = await client.get('/members');
+      const gymId = user?.gym_id || (typeof user?.gym_id === 'object' ? (user?.gym_id as any)?._id : null) || '66810a6bb8c4d284724b01ab';
+      const res = await client.get(`/members/gym/${gymId}`);
       setMembers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to fetch member list:', err);
@@ -20,7 +23,7 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchMembers();
@@ -39,7 +42,7 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
     if (!matchesSearch) return false;
     if (statusFilter === 'all') return true;
     if (statusFilter === 'active') return m.status === 'active';
-    if (statusFilter === 'pending_approval') return m.status === 'pending_approval';
+    if (statusFilter === 'pending_approval') return m.status === 'pending_approval' || m.status === 'pending';
     if (statusFilter === 'pending_payment') return m.status === 'pending_payment';
     if (statusFilter === 'inactive') return m.status === 'inactive';
     return true;
@@ -50,6 +53,7 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
       case 'active':
         return { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', label: 'Active' };
       case 'pending_approval':
+      case 'pending':
         return { bg: 'bg-amber-50 border-amber-200', text: 'text-amber-700', label: 'Pending Approval' };
       case 'pending_payment':
         return { bg: 'bg-indigo-50 border-indigo-200', text: 'text-indigo-700', label: 'Pending Payment' };
