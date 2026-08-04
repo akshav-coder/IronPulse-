@@ -50,32 +50,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string): Promise<User> => {
-    setLoading(true);
     setError(null);
     try {
       const response = await client.post('/users/login', { email, password });
       const data = response.data;
       const normalizedUser = data ? { ...data, id: data.id || data._id, _id: data._id || data.id } : null;
       
-      setUser(normalizedUser);
       if (normalizedUser) {
         await SecureStore.setItemAsync('userInfo', JSON.stringify(normalizedUser));
         if (normalizedUser.token) {
           await SecureStore.setItemAsync('userToken', normalizedUser.token);
         }
+        setUser(normalizedUser);
       }
       return normalizedUser;
     } catch (err: any) {
-      const errMsg = err.response?.data?.message || err.message || 'Login failed';
+      const errMsg = err.response?.data?.message || err.message || 'Login failed. Check backend connection or credentials.';
       setError(errMsg);
       throw new Error(errMsg);
-    } finally {
-      setLoading(false);
     }
   };
 
   const register = async (name: string, email: string, password: string, phone?: string): Promise<User> => {
-    setLoading(true);
     setError(null);
     try {
       // Signups default to general member, linking the backend dummy gym ID
@@ -90,20 +86,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = response.data;
       const normalizedUser = data ? { ...data, id: data.id || data._id, _id: data._id || data.id } : null;
 
-      setUser(normalizedUser);
       if (normalizedUser) {
         await SecureStore.setItemAsync('userInfo', JSON.stringify(normalizedUser));
         if (normalizedUser.token) {
           await SecureStore.setItemAsync('userToken', normalizedUser.token);
         }
+        setUser(normalizedUser);
       }
       return normalizedUser;
     } catch (err: any) {
-      const errMsg = err.response?.data?.message || err.message || 'Registration failed';
+      const errMsg = err.response?.data?.message || err.message || 'Registration failed. Check backend connection or credentials.';
       setError(errMsg);
       throw new Error(errMsg);
-    } finally {
-      setLoading(false);
     }
   };
 
