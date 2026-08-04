@@ -22,6 +22,8 @@ export const AppNavigator = () => {
     );
   }
 
+  const role = user?.role ? user.role.toLowerCase() : '';
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -30,9 +32,9 @@ export const AppNavigator = () => {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
-        ) : user.role === 'owner' ? (
+        ) : role === 'owner' ? (
           <Stack.Screen name="OwnerRoot" component={OwnerNavigator} />
-        ) : user.role === 'trainer' ? (
+        ) : role === 'trainer' || role === 'staff' ? (
           <Stack.Screen name="TrainerRoot" component={TrainerNavigator} />
         ) : (
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
