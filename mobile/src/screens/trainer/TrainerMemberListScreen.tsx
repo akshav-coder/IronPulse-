@@ -4,6 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 
+const toIdString = (val: any): string => {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'object') {
+    return (val._id || val.id || val.user_id || '').toString();
+  }
+  return String(val);
+};
+
 const TrainerMemberListScreen = ({ navigation }: any) => {
   const { user } = useAuth();
   const [clients, setClients] = useState<any[]>([]);
@@ -17,11 +26,10 @@ const TrainerMemberListScreen = ({ navigation }: any) => {
       const res = await client.get(`/members/gym/${gymId}`);
       const allMembers = Array.isArray(res.data) ? res.data : [];
 
-      const trainerIdStr = (user?.id || user?._id || '').toString();
+      const trainerIdStr = toIdString(user);
       const myClients = allMembers.filter((m: any) => {
-        const trainerObj = m.assigned_trainer_id;
-        const assignedId = (typeof trainerObj === 'object' ? trainerObj?._id || trainerObj?.id : trainerObj || '').toString();
-        return assignedId === trainerIdStr;
+        const assignedId = toIdString(m.assigned_trainer_id);
+        return assignedId && trainerIdStr && assignedId === trainerIdStr;
       });
 
       setClients(myClients);

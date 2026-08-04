@@ -4,6 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 
+const toIdString = (val: any): string => {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'object') {
+    return (val._id || val.id || val.user_id || '').toString();
+  }
+  return String(val);
+};
+
 const TrainerDashboardScreen = ({ navigation }: any) => {
   const { user, logout } = useAuth();
   const [assignedClients, setAssignedClients] = useState<any[]>([]);
@@ -20,19 +29,17 @@ const TrainerDashboardScreen = ({ navigation }: any) => {
       ]);
 
       const allMembers = Array.isArray(membersRes.data) ? membersRes.data : [];
-      const trainerIdStr = (user?.id || user?._id || '').toString();
+      const trainerIdStr = toIdString(user);
 
       const myClients = allMembers.filter((m: any) => {
-        const trainerObj = m.assigned_trainer_id;
-        const assignedId = (typeof trainerObj === 'object' ? trainerObj?._id || trainerObj?.id : trainerObj || '').toString();
-        return assignedId === trainerIdStr;
+        const assignedId = toIdString(m.assigned_trainer_id);
+        return assignedId && trainerIdStr && assignedId === trainerIdStr;
       });
 
       const allClasses = Array.isArray(classesRes.data) ? classesRes.data : [];
       const myClasses = allClasses.filter((c: any) => {
-        const trainerObj = c.trainer_id;
-        const classTrainerId = (typeof trainerObj === 'object' ? trainerObj?._id || trainerObj?.id : trainerObj || '').toString();
-        return classTrainerId === trainerIdStr;
+        const classTrainerId = toIdString(c.trainer_id);
+        return classTrainerId && trainerIdStr && classTrainerId === trainerIdStr;
       });
 
       setAssignedClients(myClients);
