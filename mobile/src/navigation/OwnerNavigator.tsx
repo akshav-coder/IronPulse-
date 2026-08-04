@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import OwnerDashboardScreen from '../screens/owner/OwnerDashboardScreen';
@@ -46,7 +46,7 @@ const OwnerNavigator = () => {
         {activeTab === 'dashboard' && (
           <OwnerDashboardScreen
             navigation={{
-              navigate: (screen: string, params?: any) => {
+              navigate: (screen: string) => {
                 if (screen === 'PendingSignups' || screen === 'MembersTab') {
                   setActiveTab('members');
                 } else if (screen === 'PaymentsTab' || screen === 'OwnerPlans') {
@@ -66,19 +66,20 @@ const OwnerNavigator = () => {
       {/* Safe Area Dynamic Bottom Tab Bar */}
       <View
         style={{
-          paddingBottom: Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(insets.bottom, 12),
+          paddingTop: 8,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E2E8F0',
         }}
       >
-        <View className="flex-row py-2 px-3 justify-around items-center">
+        <View className="flex-row px-4 justify-around items-center">
           <TouchableOpacity
             onPress={() => setActiveTab('dashboard')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">📊</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">📊</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Dashboard
             </Text>
           </TouchableOpacity>
@@ -87,8 +88,8 @@ const OwnerNavigator = () => {
             onPress={() => setActiveTab('members')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">👥</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'members' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">👥</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'members' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Members
             </Text>
           </TouchableOpacity>
@@ -97,8 +98,8 @@ const OwnerNavigator = () => {
             onPress={() => setActiveTab('payments')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">💳</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'payments' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">💳</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'payments' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Payments
             </Text>
           </TouchableOpacity>
@@ -107,8 +108,8 @@ const OwnerNavigator = () => {
             onPress={() => setActiveTab('staff')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">👨‍🏫</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'staff' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">👨‍🏫</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'staff' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Staff
             </Text>
           </TouchableOpacity>

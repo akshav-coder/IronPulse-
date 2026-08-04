@@ -59,19 +59,20 @@ const MemberNavigator = () => {
       {/* Safe Area Dynamic Bottom Tab Bar */}
       <View
         style={{
-          paddingBottom: Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(insets.bottom, 12),
+          paddingTop: 8,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E2E8F0',
         }}
       >
-        <View className="flex-row py-2 px-2 justify-around items-center">
+        <View className="flex-row px-2 justify-around items-center">
           <TouchableOpacity
             onPress={() => setActiveTab('dashboard')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">🔥</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">🔥</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Hub
             </Text>
           </TouchableOpacity>
@@ -80,8 +81,8 @@ const MemberNavigator = () => {
             onPress={() => setActiveTab('workouts')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">💪</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'workouts' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">💪</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'workouts' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Workouts
             </Text>
           </TouchableOpacity>
@@ -90,8 +91,8 @@ const MemberNavigator = () => {
             onPress={() => setActiveTab('diet')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">🥗</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'diet' ? 'text-emerald-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">🥗</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'diet' ? 'text-emerald-600' : 'text-slate-400'}`}>
               Diet Plan
             </Text>
           </TouchableOpacity>
@@ -100,8 +101,8 @@ const MemberNavigator = () => {
             onPress={() => setActiveTab('classes')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">🎟️</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'classes' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">🎟️</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'classes' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Classes
             </Text>
           </TouchableOpacity>
@@ -110,8 +111,8 @@ const MemberNavigator = () => {
             onPress={() => setActiveTab('profile')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">👤</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'profile' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">👤</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'profile' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Profile
             </Text>
           </TouchableOpacity>

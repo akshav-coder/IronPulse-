@@ -68,19 +68,20 @@ const TrainerNavigator = () => {
       {/* Safe Area Dynamic Bottom Tab Bar */}
       <View
         style={{
-          paddingBottom: Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(insets.bottom, 12),
+          paddingTop: 8,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E2E8F0',
         }}
       >
-        <View className="flex-row py-2 px-3 justify-around items-center">
+        <View className="flex-row px-4 justify-around items-center">
           <TouchableOpacity
             onPress={() => setActiveTab('dashboard')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">🏋️‍♂️</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">🏋️‍♂️</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Dashboard
             </Text>
           </TouchableOpacity>
@@ -89,8 +90,8 @@ const TrainerNavigator = () => {
             onPress={() => setActiveTab('clients')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">👥</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'clients' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">👥</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'clients' ? 'text-indigo-600' : 'text-slate-400'}`}>
               My Clients
             </Text>
           </TouchableOpacity>
@@ -99,8 +100,8 @@ const TrainerNavigator = () => {
             onPress={() => setActiveTab('workouts')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">💪</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'workouts' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">💪</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'workouts' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Workouts
             </Text>
           </TouchableOpacity>
@@ -109,8 +110,8 @@ const TrainerNavigator = () => {
             onPress={() => setActiveTab('diets')}
             className="items-center py-1 flex-1"
           >
-            <Text className="text-lg">🥗</Text>
-            <Text className={`text-[10px] font-bold mt-0.5 ${activeTab === 'diets' ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <Text className="text-2xl mb-1">🥗</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'diets' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Diet Plans
             </Text>
           </TouchableOpacity>
