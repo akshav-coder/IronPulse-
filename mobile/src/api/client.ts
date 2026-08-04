@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-// Live public API endpoint via Serveo tunnel
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://d231b5872dc16128-120-56-109-226.serveousercontent.com/api';
+// Live trusted HTTPS API endpoint
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://xoyrq-120-56-109-226.run.pinggy-free.link/api';
 
 const client = axios.create({
   baseURL: API_URL,
