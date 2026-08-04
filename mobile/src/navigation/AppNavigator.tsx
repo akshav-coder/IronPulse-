@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import OwnerNavigator from './OwnerNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,8 @@ export const AppNavigator = () => {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
           </>
+        ) : user.role === 'owner' ? (
+          <Stack.Screen name="OwnerRoot" component={OwnerNavigator} />
         ) : (
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
         )}
