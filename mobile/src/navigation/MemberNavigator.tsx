@@ -8,6 +8,7 @@ import MemberWorkoutPlanScreen from '../screens/member/MemberWorkoutPlanScreen';
 import MemberDietPlanScreen from '../screens/member/MemberDietPlanScreen';
 import MemberClassScheduleScreen from '../screens/member/MemberClassScheduleScreen';
 import MemberProfileScreen from '../screens/member/MemberProfileScreen';
+import MemberQRCodeScreen from '../screens/member/MemberQRCodeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,7 +52,10 @@ const MemberNavigator = () => {
           )}
 
           {activeTab === 'profile' && (
-            <Stack.Screen name="MemberProfile" component={MemberProfileScreen} />
+            <>
+              <Stack.Screen name="MemberProfile" component={MemberProfileScreen} />
+              <Stack.Screen name="MemberQRCode" component={MemberQRCodeScreen} />
+            </>
           )}
         </Stack.Navigator>
       </View>

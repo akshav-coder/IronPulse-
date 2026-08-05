@@ -30,8 +30,12 @@ const attendanceSchema = new mongoose.Schema(
   }
 );
 
-// Compound index to prevent duplicate attendance for the same member on the same day
-// Wait, we can keep it flexible or index it if needed. Let's keep the schema simple and robust.
+// Enforces at most one open (check_out_time: null) session per member at the DB level,
+// closing the read-then-write race in checkIn's app-level duplicate check.
+attendanceSchema.index(
+  { member_id: 1, check_out_time: 1 },
+  { unique: true, partialFilterExpression: { check_out_time: null } }
+);
 
 const Attendance = mongoose.model('Attendance', attendanceSchema);
 export default Attendance;

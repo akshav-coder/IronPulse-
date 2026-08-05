@@ -10,11 +10,12 @@ import TrainerWorkoutPlanScreen from '../screens/trainer/TrainerWorkoutPlanScree
 import TrainerCreateWorkoutPlanScreen from '../screens/trainer/TrainerCreateWorkoutPlanScreen';
 import TrainerDietPlanScreen from '../screens/trainer/TrainerDietPlanScreen';
 import TrainerCreateDietPlanScreen from '../screens/trainer/TrainerCreateDietPlanScreen';
+import TrainerScanQRScreen from '../screens/trainer/TrainerScanQRScreen';
 
 const Stack = createNativeStackNavigator();
 
 const TrainerNavigator = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'clients' | 'workouts' | 'diets'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'clients' | 'workouts' | 'diets' | 'scan'>('dashboard');
   const insets = useSafeAreaInsets();
 
   return (
@@ -61,6 +62,10 @@ const TrainerNavigator = () => {
               <Stack.Screen name="TrainerDietList" component={TrainerDietPlanScreen} />
               <Stack.Screen name="CreateDietPlan" component={TrainerCreateDietPlanScreen} />
             </>
+          )}
+
+          {activeTab === 'scan' && (
+            <Stack.Screen name="TrainerScanQR" component={TrainerScanQRScreen} />
           )}
         </Stack.Navigator>
       </View>
@@ -113,6 +118,16 @@ const TrainerNavigator = () => {
             <Text className="text-2xl mb-1">🥗</Text>
             <Text className={`text-xs font-extrabold ${activeTab === 'diets' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Diet Plans
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setActiveTab('scan')}
+            className="items-center py-1 flex-1"
+          >
+            <Text className="text-2xl mb-1">📷</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'scan' ? 'text-indigo-600' : 'text-slate-400'}`}>
+              Scan QR
             </Text>
           </TouchableOpacity>
         </View>

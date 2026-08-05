@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import Payment from '../models/Payment.js';
 import Notification from '../models/Notification.js';
+import Attendance from '../models/Attendance.js';
 
 export const initCronJobs = () => {
   // Run daily at midnight
@@ -8,7 +9,36 @@ export const initCronJobs = () => {
     console.log('Running daily payment due checks cron job...');
     await checkPaymentDueDates();
   });
-  console.log('Cron schedule initialized: Daily payments monitor active.');
+
+  // Run daily just before midnight to close out anyone who forgot to check out
+  cron.schedule('55 23 * * *', async () => {
+    console.log('Running end-of-day attendance auto-checkout cron job...');
+    await autoCloseOpenAttendanceSessions();
+  });
+
+  console.log('Cron schedule initialized: Daily payments monitor and attendance auto-checkout active.');
+};
+
+// @desc  Closes any attendance session still open (check_out_time: null) for
+//        today, so a member who forgot to check out doesn't stay "active"
+//        indefinitely and block their next day's check-in.
+export const autoCloseOpenAttendanceSessions = async () => {
+  try {
+    const now = new Date();
+    const dayStart = new Date(now);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(now);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const result = await Attendance.updateMany(
+      { date: { $gte: dayStart, $lte: dayEnd }, check_out_time: null },
+      { $set: { check_out_time: dayEnd } }
+    );
+
+    console.log(`[Cron] Auto-closed ${result.modifiedCount} forgotten check-in session(s) for today.`);
+  } catch (error) {
+    console.error('[Cron Error] Error executing attendance auto-checkout job:', error);
+  }
 };
 
 export const checkPaymentDueDates = async () => {

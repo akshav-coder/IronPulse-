@@ -11,6 +11,7 @@ import OwnerPaymentListScreen from '../screens/owner/OwnerPaymentListScreen';
 import OwnerPlanListScreen from '../screens/owner/OwnerPlanListScreen';
 import OwnerStaffListScreen from '../screens/owner/OwnerStaffListScreen';
 import OwnerClassScheduleScreen from '../screens/owner/OwnerClassScheduleScreen';
+import TrainerScanQRScreen from '../screens/trainer/TrainerScanQRScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +38,7 @@ const StaffStack = () => (
 );
 
 const OwnerNavigator = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'payments' | 'staff'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'payments' | 'staff' | 'scan'>('dashboard');
   const insets = useSafeAreaInsets();
 
   return (
@@ -61,6 +62,7 @@ const OwnerNavigator = () => {
         {activeTab === 'members' && <MembersStack />}
         {activeTab === 'payments' && <PaymentsStack />}
         {activeTab === 'staff' && <StaffStack />}
+        {activeTab === 'scan' && <TrainerScanQRScreen />}
       </View>
 
       {/* Safe Area Dynamic Bottom Tab Bar */}
@@ -111,6 +113,16 @@ const OwnerNavigator = () => {
             <Text className="text-2xl mb-1">👨‍🏫</Text>
             <Text className={`text-xs font-extrabold ${activeTab === 'staff' ? 'text-indigo-600' : 'text-slate-400'}`}>
               Staff
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setActiveTab('scan')}
+            className="items-center py-1 flex-1"
+          >
+            <Text className="text-2xl mb-1">📷</Text>
+            <Text className={`text-xs font-extrabold ${activeTab === 'scan' ? 'text-indigo-600' : 'text-slate-400'}`}>
+              Scan QR
             </Text>
           </TouchableOpacity>
         </View>

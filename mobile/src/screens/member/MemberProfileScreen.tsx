@@ -4,12 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import client from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 
-const MemberProfileScreen = () => {
+const MemberProfileScreen = ({ navigation }: any) => {
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkOutStatus, setCheckOutStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [checkedIn, setCheckedIn] = useState(false);
 
   const fetchProfileData = useCallback(async () => {
     try {
@@ -28,6 +31,9 @@ const MemberProfileScreen = () => {
       });
 
       setPayments(myPayments);
+
+      const statusRes = await client.get('/attendance/status-self').catch(() => ({ data: { checkedIn: false } }));
+      setCheckedIn(!!statusRes.data?.checkedIn);
     } catch (err) {
       console.error('Error fetching member profile:', err);
     } finally {
@@ -43,6 +49,22 @@ const MemberProfileScreen = () => {
   const onRefresh = () => {
     setRefreshing(true);
     fetchProfileData();
+  };
+
+  const handleCheckOut = async () => {
+    if (!checkedIn) return;
+    setCheckingOut(true);
+    setCheckOutStatus(null);
+    try {
+      await client.put('/attendance/check-out-self');
+      setCheckedIn(false);
+      setCheckOutStatus({ type: 'success', message: 'Checked out successfully. See you next time!' });
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Could not check out right now';
+      setCheckOutStatus({ type: 'error', message });
+    } finally {
+      setCheckingOut(false);
+    }
   };
 
   const name = user?.name || profile?.user_id?.name || 'Gym Athlete';
@@ -84,6 +106,46 @@ const MemberProfileScreen = () => {
                   Member • {planName}
                 </Text>
               </View>
+            </View>
+
+            {/* QR Check-in Entry Point */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MemberQRCode')}
+              className="bg-indigo-600 rounded-2xl py-4 items-center shadow-sm active:bg-indigo-700 flex-row justify-center"
+            >
+              <Text className="text-white font-bold text-sm">📱  Show My Check-In QR Code</Text>
+            </TouchableOpacity>
+
+            {/* Self Check-Out */}
+            <View className="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+              <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+                {checkedIn ? "You're currently checked in" : 'Not checked in right now'}
+              </Text>
+              <TouchableOpacity
+                onPress={handleCheckOut}
+                disabled={!checkedIn || checkingOut}
+                className={`rounded-2xl py-3.5 items-center flex-row justify-center border ${
+                  checkedIn ? 'bg-slate-50 border-slate-200 active:bg-slate-100' : 'bg-slate-50 border-slate-100 opacity-40'
+                }`}
+              >
+                {checkingOut ? (
+                  <ActivityIndicator color="#4F46E5" />
+                ) : (
+                  <Text className="text-slate-800 font-bold text-sm">✅  Check Out Now</Text>
+                )}
+              </TouchableOpacity>
+              {checkOutStatus && (
+                <Text
+                  className={`text-xs text-center mt-2.5 ${
+                    checkOutStatus.type === 'success' ? 'text-emerald-700' : 'text-rose-600'
+                  }`}
+                >
+                  {checkOutStatus.message}
+                </Text>
+              )}
+              <Text className="text-[10px] text-slate-400 text-center mt-2">
+                Forgot to check out? We'll automatically close your session at the end of the day.
+              </Text>
             </View>
 
             {/* Payment Receipts History */}
