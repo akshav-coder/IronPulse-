@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 // Live trusted HTTPS API endpoint
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://tomrb-120-56-99-154.run.pinggy-free.link/api';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://ylojf-120-56-99-154.run.pinggy-free.link/api';
 
 const client = axios.create({
   baseURL: API_URL,
