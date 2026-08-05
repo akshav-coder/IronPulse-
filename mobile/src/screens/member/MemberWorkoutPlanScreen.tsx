@@ -14,7 +14,7 @@ const DEFAULT_DAY_SUBTITLES: Record<string, string> = {
   Saturday: 'Lower Body & Calves Focus',
 };
 
-const MemberWorkoutPlanScreen = () => {
+const MemberWorkoutPlanScreen = ({ navigation }: any) => {
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
   const [workoutItems, setWorkoutItems] = useState<any[]>([]);
   const [completedItems, setCompletedItems] = useState<Record<string, boolean>>({});
@@ -65,6 +65,14 @@ const MemberWorkoutPlanScreen = () => {
           <Text className="text-3xl font-black text-[#1F2937]">My Workout Plan</Text>
           <Text className="text-sm text-slate-500 mt-1">Prescribed Monday–Saturday workout routines</Text>
         </View>
+
+        {/* Log Workout Entry Point */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MemberWorkoutLog')}
+          className="bg-indigo-600 rounded-2xl py-4 items-center shadow-sm active:bg-indigo-700 flex-row justify-center mb-5"
+        >
+          <Text className="text-white font-bold text-sm">🏋️  Log a Workout</Text>
+        </TouchableOpacity>
 
         {/* Day Selector Pills */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-5">

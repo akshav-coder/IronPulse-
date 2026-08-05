@@ -116,7 +116,7 @@ export const updateWorkoutPlanItem = async (req, res) => {
     }
 
     // Verify trainer owns this plan/member assignment
-    if (req.user.role === 'trainer' && planItem.trainer_id.toString() !== req.user.id) {
+    if (req.user.role === 'trainer' && planItem.trainer_id.toString() !== req.user.id.toString()) {
       res.status(403);
       throw new Error('Not authorized to edit this workout plan item');
     }
@@ -145,7 +145,7 @@ export const deleteWorkoutPlanItem = async (req, res) => {
     }
 
     // Verify trainer
-    if (req.user.role === 'trainer' && planItem.trainer_id.toString() !== req.user.id) {
+    if (req.user.role === 'trainer' && planItem.trainer_id.toString() !== req.user.id.toString()) {
       res.status(403);
       throw new Error('Not authorized to delete this workout plan item');
     }

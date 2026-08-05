@@ -5,7 +5,7 @@ import client from '../../api/client';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const MemberDietPlanScreen = () => {
+const MemberDietPlanScreen = ({ navigation }: any) => {
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
   const [dietItems, setDietItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +56,14 @@ const MemberDietPlanScreen = () => {
           <Text className="text-2xl font-black text-[#1F2937]">My Diet Plan</Text>
           <Text className="text-xs text-slate-500 mt-0.5">Prescribed daily meal schedule & nutrition targets</Text>
         </View>
+
+        {/* Log Meal Entry Point */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MemberMealLog')}
+          className="bg-emerald-600 rounded-2xl py-4 items-center shadow-sm active:bg-emerald-700 flex-row justify-center mb-4"
+        >
+          <Text className="text-white font-bold text-sm">📝  Log a Meal</Text>
+        </TouchableOpacity>
 
         {/* Day Selector Pills */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-4">

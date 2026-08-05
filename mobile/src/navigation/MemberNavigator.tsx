@@ -1,127 +1,87 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { navigate as navigateRef } from './navigationRef';
+import BottomTabBar, { TabItem } from '../components/BottomTabBar';
 
 import MemberDashboardScreen from '../screens/member/MemberDashboardScreen';
 import MemberWorkoutPlanScreen from '../screens/member/MemberWorkoutPlanScreen';
+import MemberWorkoutLogScreen from '../screens/member/MemberWorkoutLogScreen';
 import MemberDietPlanScreen from '../screens/member/MemberDietPlanScreen';
+import MemberMealLogScreen from '../screens/member/MemberMealLogScreen';
 import MemberClassScheduleScreen from '../screens/member/MemberClassScheduleScreen';
+import MemberFeedScreen from '../screens/member/MemberFeedScreen';
+import MemberChatScreen from '../screens/member/MemberChatScreen';
 import MemberProfileScreen from '../screens/member/MemberProfileScreen';
 import MemberQRCodeScreen from '../screens/member/MemberQRCodeScreen';
+import MemberProgressScreen from '../screens/member/MemberProgressScreen';
+import LeaderboardScreen from '../screens/shared/LeaderboardScreen';
 
 const Stack = createNativeStackNavigator();
 
+// Every screen is registered ONCE in a single, always-mounted Stack.Navigator.
+// A previous version conditionally mounted/unmounted whole Stack.Navigator
+// instances (or swapped a shared navigator's screen set) based on tab state —
+// react-navigation's internal NavigationStateContext expects a nested
+// navigator to be registered as an actual Stack.Screen, not rendered as a
+// free-floating component; doing otherwise throws "Couldn't find a
+// navigation context" the moment you navigate to a sibling screen. The
+// custom bottom tab bar below drives navigation via a ref instead of
+// controlling which screens exist.
+type Section = 'dashboard' | 'workouts' | 'diet' | 'classes' | 'feed' | 'chat' | 'profile';
+
+const SECTION_HOME_SCREEN: Record<Section, string> = {
+  dashboard: 'MemberDashboard',
+  workouts: 'MemberWorkouts',
+  diet: 'MemberDiet',
+  classes: 'MemberClasses',
+  feed: 'MemberFeed',
+  chat: 'MemberChat',
+  profile: 'MemberProfile',
+};
+
+const TAB_ITEMS: TabItem[] = [
+  { key: 'dashboard', label: 'Hub', icon: '🔥' },
+  { key: 'workouts', label: 'Workouts', icon: '💪' },
+  { key: 'diet', label: 'Diet Plan', icon: '🥗', activeColor: 'text-emerald-600' },
+  { key: 'classes', label: 'Classes', icon: '🎟️' },
+  { key: 'feed', label: 'Feed', icon: '📰' },
+  { key: 'chat', label: 'Chat', icon: '💬' },
+  { key: 'profile', label: 'Profile', icon: '👤' },
+];
+
 const MemberNavigator = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'workouts' | 'diet' | 'classes' | 'profile'>('dashboard');
-  const insets = useSafeAreaInsets();
+  const [activeSection, setActiveSection] = useState<Section>('dashboard');
+
+  const goToSection = (section: Section) => {
+    setActiveSection(section);
+    navigateRef(SECTION_HOME_SCREEN[section]);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <View style={{ flex: 1 }}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {activeTab === 'dashboard' && (
-            <Stack.Screen name="MemberDashboard">
-              {(props) => (
-                <MemberDashboardScreen
-                  {...props}
-                  navigation={{
-                    ...props.navigation,
-                    navigate: (screen: string) => {
-                      if (screen === 'Workouts') setActiveTab('workouts');
-                      else if (screen === 'Diet') setActiveTab('diet');
-                      else if (screen === 'Classes') setActiveTab('classes');
-                      else if (screen === 'Profile') setActiveTab('profile');
-                    },
-                  }}
-                />
-              )}
-            </Stack.Screen>
-          )}
-
-          {activeTab === 'workouts' && (
-            <Stack.Screen name="MemberWorkouts" component={MemberWorkoutPlanScreen} />
-          )}
-
-          {activeTab === 'diet' && (
-            <Stack.Screen name="MemberDiet" component={MemberDietPlanScreen} />
-          )}
-
-          {activeTab === 'classes' && (
-            <Stack.Screen name="MemberClasses" component={MemberClassScheduleScreen} />
-          )}
-
-          {activeTab === 'profile' && (
-            <>
-              <Stack.Screen name="MemberProfile" component={MemberProfileScreen} />
-              <Stack.Screen name="MemberQRCode" component={MemberQRCodeScreen} />
-            </>
-          )}
+          <Stack.Screen name="MemberDashboard" component={MemberDashboardScreen} />
+          <Stack.Screen name="MemberWorkouts" component={MemberWorkoutPlanScreen} />
+          <Stack.Screen name="MemberWorkoutLog" component={MemberWorkoutLogScreen} />
+          <Stack.Screen name="MemberDiet" component={MemberDietPlanScreen} />
+          <Stack.Screen name="MemberMealLog" component={MemberMealLogScreen} />
+          <Stack.Screen name="MemberClasses" component={MemberClassScheduleScreen} />
+          <Stack.Screen name="MemberFeed" component={MemberFeedScreen} />
+          <Stack.Screen name="MemberChat" component={MemberChatScreen} />
+          <Stack.Screen name="MemberProfile" component={MemberProfileScreen} />
+          <Stack.Screen name="MemberQRCode" component={MemberQRCodeScreen} />
+          <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
+          <Stack.Screen name="MemberProgress" component={MemberProgressScreen} />
         </Stack.Navigator>
       </View>
 
-      {/* Safe Area Dynamic Bottom Tab Bar */}
-      <View
-        style={{
-          paddingBottom: Math.max(insets.bottom, 12),
-          paddingTop: 8,
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E2E8F0',
-        }}
-      >
-        <View className="flex-row px-2 justify-around items-center">
-          <TouchableOpacity
-            onPress={() => setActiveTab('dashboard')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">🔥</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Hub
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('workouts')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">💪</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'workouts' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Workouts
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('diet')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">🥗</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'diet' ? 'text-emerald-600' : 'text-slate-400'}`}>
-              Diet Plan
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('classes')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">🎟️</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'classes' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Classes
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('profile')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">👤</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'profile' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Profile
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <BottomTabBar
+        items={TAB_ITEMS}
+        activeKey={activeSection}
+        onSelect={(key) => goToSection(key as Section)}
+      />
     </View>
   );
 };

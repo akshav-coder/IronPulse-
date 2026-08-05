@@ -61,9 +61,17 @@ const TrainerMemberListScreen = ({ navigation }: any) => {
       <View className="flex-1 px-5 pt-4">
 
         {/* Header */}
-        <View className="mb-4">
-          <Text className="text-2xl font-black text-[#1F2937]">My Clients</Text>
-          <Text className="text-xs text-slate-500 mt-0.5">{clients.length} Assigned Athletes</Text>
+        <View className="mb-4 flex-row items-center justify-between">
+          <View>
+            <Text className="text-2xl font-black text-[#1F2937]">My Clients</Text>
+            <Text className="text-xs text-slate-500 mt-0.5">{clients.length} Assigned Athletes</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Leaderboard')}
+            className="bg-amber-50 border border-amber-100 rounded-full px-3.5 py-2"
+          >
+            <Text className="text-amber-700 text-xs font-bold">🏆 Leaderboard</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Search Bar */}

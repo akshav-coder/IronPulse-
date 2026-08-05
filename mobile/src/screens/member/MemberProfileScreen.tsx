@@ -13,6 +13,8 @@ const MemberProfileScreen = ({ navigation }: any) => {
   const [checkingOut, setCheckingOut] = useState(false);
   const [checkOutStatus, setCheckOutStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [checkedIn, setCheckedIn] = useState(false);
+  const [streak, setStreak] = useState<{ currentStreak: number; longestStreak: number } | null>(null);
+  const [badges, setBadges] = useState<any[]>([]);
 
   const fetchProfileData = useCallback(async () => {
     try {
@@ -34,6 +36,12 @@ const MemberProfileScreen = ({ navigation }: any) => {
 
       const statusRes = await client.get('/attendance/status-self').catch(() => ({ data: { checkedIn: false } }));
       setCheckedIn(!!statusRes.data?.checkedIn);
+
+      const streakRes = await client.get('/gamification/streak-self').catch(() => null);
+      if (streakRes) setStreak(streakRes.data);
+
+      const badgesRes = await client.get('/gamification/badges-self').catch(() => ({ data: [] }));
+      setBadges(Array.isArray(badgesRes.data) ? badgesRes.data : []);
     } catch (err) {
       console.error('Error fetching member profile:', err);
     } finally {
@@ -115,6 +123,43 @@ const MemberProfileScreen = ({ navigation }: any) => {
             >
               <Text className="text-white font-bold text-sm">📱  Show My Check-In QR Code</Text>
             </TouchableOpacity>
+
+            {/* Body Progress Entry Point */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MemberProgress')}
+              className="bg-white border border-slate-200 rounded-2xl py-4 items-center shadow-sm active:bg-slate-50 flex-row justify-center"
+            >
+              <Text className="text-slate-800 font-bold text-sm">📈  View My Body Progress</Text>
+            </TouchableOpacity>
+
+            {/* Streak & Badges */}
+            <View className="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+              <View className="flex-row items-center justify-between mb-3">
+                <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Your Streak</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')}>
+                  <Text className="text-indigo-600 font-bold text-xs">🏆 Leaderboard</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View className="flex-row items-center">
+                <Text className="text-3xl mr-2">🔥</Text>
+                <View>
+                  <Text className="text-2xl font-black text-slate-800">{streak?.currentStreak ?? 0} days</Text>
+                  <Text className="text-[10px] text-slate-400">Best: {streak?.longestStreak ?? 0} days</Text>
+                </View>
+              </View>
+
+              {badges.length > 0 && (
+                <View className="flex-row flex-wrap mt-4">
+                  {badges.map((badge) => (
+                    <View key={badge._id} className="bg-amber-50 border border-amber-100 rounded-full px-3 py-1.5 mr-2 mb-2 flex-row items-center">
+                      <Text className="text-sm mr-1">{badge.emoji}</Text>
+                      <Text className="text-amber-700 text-[10px] font-bold">{badge.label}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
 
             {/* Self Check-Out */}
             <View className="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">

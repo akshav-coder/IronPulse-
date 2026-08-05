@@ -117,7 +117,7 @@ const TrainerDashboardScreen = ({ navigation }: any) => {
               
               <View className="space-y-2.5">
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('TrainerWorkouts', { screen: 'CreateWorkoutPlan' })}
+                  onPress={() => navigation.navigate('CreateWorkoutPlan')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">
@@ -133,7 +133,7 @@ const TrainerDashboardScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('TrainerDiets', { screen: 'CreateDietPlan' })}
+                  onPress={() => navigation.navigate('CreateDietPlan')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">
@@ -149,7 +149,7 @@ const TrainerDashboardScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('TrainerClientsTab')}
+                  onPress={() => navigation.navigate('TrainerClientList')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">

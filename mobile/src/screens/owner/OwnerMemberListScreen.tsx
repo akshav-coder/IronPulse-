@@ -72,12 +72,20 @@ const OwnerMemberListScreen = ({ navigation }: any) => {
             <Text className="text-2xl font-black text-[#1F2937]">Members</Text>
             <Text className="text-xs text-slate-500 mt-0.5">{members.length} Total Enrolled</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('PendingSignups')}
-            className="bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl flex-row items-center space-x-1"
-          >
-            <Text className="text-amber-800 text-xs font-bold">Pending Approvals ⚡</Text>
-          </TouchableOpacity>
+          <View className="flex-row items-center space-x-2">
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Leaderboard')}
+              className="bg-white border border-amber-200 px-3 py-2 rounded-xl"
+            >
+              <Text className="text-amber-700 text-xs font-bold">🏆</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('PendingSignups')}
+              className="bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl flex-row items-center space-x-1"
+            >
+              <Text className="text-amber-800 text-xs font-bold">Pending Approvals ⚡</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Search Bar */}

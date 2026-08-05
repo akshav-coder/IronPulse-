@@ -139,7 +139,7 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
               
               <View className="space-y-2.5">
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('MembersTab', { screen: 'PendingSignups' })}
+                  onPress={() => navigation.navigate('PendingSignups')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">
@@ -155,7 +155,7 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('PaymentsTab', { screen: 'OwnerPlans' })}
+                  onPress={() => navigation.navigate('OwnerPlans')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">
@@ -171,7 +171,7 @@ const OwnerDashboardScreen = ({ navigation }: any) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('StaffTab', { screen: 'OwnerStaff' })}
+                  onPress={() => navigation.navigate('OwnerStaff')}
                   className="bg-white border border-slate-200 rounded-2xl p-4 flex-row items-center justify-between active:bg-slate-50"
                 >
                   <View className="flex-row items-center space-x-3">

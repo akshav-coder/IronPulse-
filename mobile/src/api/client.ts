@@ -30,4 +30,9 @@ client.interceptors.request.use(
   }
 );
 
+// Uploaded files (e.g. post images) are served from the Express app root
+// (app.use('/uploads', ...)), not under the /api prefix, so callers need the
+// bare origin to build a displayable URL from a relative image_url.
+export const getMediaBaseUrl = () => (client.defaults.baseURL || '').replace(/\/api\/?$/, '');
+
 export default client;

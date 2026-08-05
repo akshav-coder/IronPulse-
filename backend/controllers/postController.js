@@ -93,7 +93,7 @@ export const updatePost = async (req, res) => {
     }
 
     // Only original author can edit
-    if (post.author_id.toString() !== req.user.id) {
+    if (post.author_id.toString() !== req.user.id.toString()) {
       res.status(403);
       throw new Error('Only the original author can edit this post');
     }
@@ -134,7 +134,7 @@ export const deletePost = async (req, res) => {
       throw new Error('Post not found');
     }
 
-    const isAuthor = post.author_id.toString() === req.user.id;
+    const isAuthor = post.author_id.toString() === req.user.id.toString();
     const isModerator = req.user.role === 'owner' || req.user.role === 'trainer';
 
     if (!isAuthor && !isModerator) {
@@ -256,7 +256,7 @@ export const updateComment = async (req, res) => {
       throw new Error('Comment not found');
     }
 
-    if (comment.user_id.toString() !== req.user.id) {
+    if (comment.user_id.toString() !== req.user.id.toString()) {
       res.status(403);
       throw new Error('Only the original commenter can edit their comment');
     }
@@ -285,7 +285,7 @@ export const deleteComment = async (req, res) => {
       throw new Error('Comment not found');
     }
 
-    const isCommenter = comment.user_id.toString() === req.user.id;
+    const isCommenter = comment.user_id.toString() === req.user.id.toString();
     const isModerator = req.user.role === 'owner' || req.user.role === 'trainer';
 
     if (!isCommenter && !isModerator) {

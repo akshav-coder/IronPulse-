@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import BottomTabBar, { TabItem } from '../components/BottomTabBar';
 
 import OwnerDashboardScreen from '../screens/owner/OwnerDashboardScreen';
 import OwnerMemberListScreen from '../screens/owner/OwnerMemberListScreen';
@@ -12,121 +12,63 @@ import OwnerPlanListScreen from '../screens/owner/OwnerPlanListScreen';
 import OwnerStaffListScreen from '../screens/owner/OwnerStaffListScreen';
 import OwnerClassScheduleScreen from '../screens/owner/OwnerClassScheduleScreen';
 import TrainerScanQRScreen from '../screens/trainer/TrainerScanQRScreen';
+import LeaderboardScreen from '../screens/shared/LeaderboardScreen';
+import { navigate as navigateRef } from './navigationRef';
 
 const Stack = createNativeStackNavigator();
 
-const MembersStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="MemberList" component={OwnerMemberListScreen} />
-    <Stack.Screen name="MemberDetail" component={OwnerMemberDetailScreen} />
-    <Stack.Screen name="PendingSignups" component={OwnerPendingSignupsScreen} />
-  </Stack.Navigator>
-);
+// Every screen is registered ONCE in a single, always-mounted Stack.Navigator
+// (see MemberNavigator.tsx for why — a nested Stack.Navigator rendered as a
+// free-floating component instead of an actual Stack.Screen throws
+// "Couldn't find a navigation context" the moment you navigate into it).
+type Section = 'dashboard' | 'members' | 'payments' | 'staff' | 'scan';
 
-const PaymentsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="OwnerPayments" component={OwnerPaymentListScreen} />
-    <Stack.Screen name="OwnerPlans" component={OwnerPlanListScreen} />
-  </Stack.Navigator>
-);
+const SECTION_HOME_SCREEN: Record<Section, string> = {
+  dashboard: 'OwnerDashboard',
+  members: 'MemberList',
+  payments: 'OwnerPayments',
+  staff: 'OwnerStaff',
+  scan: 'OwnerScanQR',
+};
 
-const StaffStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="OwnerStaff" component={OwnerStaffListScreen} />
-    <Stack.Screen name="OwnerClasses" component={OwnerClassScheduleScreen} />
-  </Stack.Navigator>
-);
+const TAB_ITEMS: TabItem[] = [
+  { key: 'dashboard', label: 'Dashboard', icon: '📊' },
+  { key: 'members', label: 'Members', icon: '👥' },
+  { key: 'payments', label: 'Payments', icon: '💳' },
+  { key: 'staff', label: 'Staff', icon: '👨‍🏫' },
+  { key: 'scan', label: 'Scan QR', icon: '📷' },
+];
 
 const OwnerNavigator = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'members' | 'payments' | 'staff' | 'scan'>('dashboard');
-  const insets = useSafeAreaInsets();
+  const [activeSection, setActiveSection] = useState<Section>('dashboard');
+
+  const goToSection = (section: Section) => {
+    setActiveSection(section);
+    navigateRef(SECTION_HOME_SCREEN[section]);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
       <View style={{ flex: 1 }}>
-        {activeTab === 'dashboard' && (
-          <OwnerDashboardScreen
-            navigation={{
-              navigate: (screen: string) => {
-                if (screen === 'PendingSignups' || screen === 'MembersTab') {
-                  setActiveTab('members');
-                } else if (screen === 'PaymentsTab' || screen === 'OwnerPlans') {
-                  setActiveTab('payments');
-                } else if (screen === 'StaffTab' || screen === 'OwnerStaff') {
-                  setActiveTab('staff');
-                }
-              },
-            }}
-          />
-        )}
-        {activeTab === 'members' && <MembersStack />}
-        {activeTab === 'payments' && <PaymentsStack />}
-        {activeTab === 'staff' && <StaffStack />}
-        {activeTab === 'scan' && <TrainerScanQRScreen />}
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="OwnerDashboard" component={OwnerDashboardScreen} />
+          <Stack.Screen name="MemberList" component={OwnerMemberListScreen} />
+          <Stack.Screen name="MemberDetail" component={OwnerMemberDetailScreen} />
+          <Stack.Screen name="PendingSignups" component={OwnerPendingSignupsScreen} />
+          <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
+          <Stack.Screen name="OwnerPayments" component={OwnerPaymentListScreen} />
+          <Stack.Screen name="OwnerPlans" component={OwnerPlanListScreen} />
+          <Stack.Screen name="OwnerStaff" component={OwnerStaffListScreen} />
+          <Stack.Screen name="OwnerClasses" component={OwnerClassScheduleScreen} />
+          <Stack.Screen name="OwnerScanQR" component={TrainerScanQRScreen} />
+        </Stack.Navigator>
       </View>
 
-      {/* Safe Area Dynamic Bottom Tab Bar */}
-      <View
-        style={{
-          paddingBottom: Math.max(insets.bottom, 12),
-          paddingTop: 8,
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E2E8F0',
-        }}
-      >
-        <View className="flex-row px-4 justify-around items-center">
-          <TouchableOpacity
-            onPress={() => setActiveTab('dashboard')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">📊</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'dashboard' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Dashboard
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('members')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">👥</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'members' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Members
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('payments')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">💳</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'payments' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Payments
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('staff')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">👨‍🏫</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'staff' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Staff
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setActiveTab('scan')}
-            className="items-center py-1 flex-1"
-          >
-            <Text className="text-2xl mb-1">📷</Text>
-            <Text className={`text-xs font-extrabold ${activeTab === 'scan' ? 'text-indigo-600' : 'text-slate-400'}`}>
-              Scan QR
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <BottomTabBar
+        items={TAB_ITEMS}
+        activeKey={activeSection}
+        onSelect={(key) => goToSection(key as Section)}
+      />
     </View>
   );
 };

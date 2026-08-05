@@ -9,6 +9,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import OwnerNavigator from './OwnerNavigator';
 import TrainerNavigator from './TrainerNavigator';
 import MemberNavigator from './MemberNavigator';
+import { navigationRef } from './navigationRef';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +27,7 @@ export const AppNavigator = () => {
   const role = user?.role ? user.role.toLowerCase() : '';
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user === null ? (
           <>

@@ -20,6 +20,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import gamificationRoutes from './routes/gamificationRoutes.js';
 import { initCronJobs } from './config/cron.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -66,6 +67,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/gamification', gamificationRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Error Handling Middlewares

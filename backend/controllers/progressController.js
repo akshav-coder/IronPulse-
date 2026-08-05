@@ -21,7 +21,7 @@ export const addProgressEntry = async (req, res) => {
     }
 
     // Verify trainer is assigned to member
-    if (member.assigned_trainer_id?.toString() !== req.user.id) {
+    if (member.assigned_trainer_id?.toString() !== req.user.id.toString()) {
       res.status(403);
       throw new Error('Not authorized to manage progress for this member');
     }
@@ -66,7 +66,7 @@ export const getProgressHistory = async (req, res) => {
         throw new Error('Not authorized to view this progress history');
       }
     } else if (req.user.role === 'trainer') {
-      if (member.assigned_trainer_id?.toString() !== req.user.id) {
+      if (member.assigned_trainer_id?.toString() !== req.user.id.toString()) {
         res.status(403);
         throw new Error('Not authorized to view this client progress history');
       }

@@ -131,7 +131,7 @@ const MemberDashboardScreen = ({ navigation }: any) => {
             <View className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Today's Workout Routine</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Workouts')}>
+                <TouchableOpacity onPress={() => navigation.navigate('MemberWorkouts')}>
                   <Text className="text-indigo-600 text-sm font-bold">View Schedule ›</Text>
                 </TouchableOpacity>
               </View>
@@ -154,7 +154,7 @@ const MemberDashboardScreen = ({ navigation }: any) => {
             <View className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="text-xs font-bold text-slate-400 uppercase tracking-wider">Today's Nutrition & Meals</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Diet')}>
+                <TouchableOpacity onPress={() => navigation.navigate('MemberDiet')}>
                   <Text className="text-emerald-700 text-sm font-bold">View Meal Plan ›</Text>
                 </TouchableOpacity>
               </View>
